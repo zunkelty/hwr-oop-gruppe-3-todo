@@ -1,61 +1,46 @@
 package hwr.oop.todo.ui;
 
-import hwr.oop.todo.io.IOController;
+import hwr.oop.todo.io.CLI;
 import hwr.oop.todo.library.todolist.ToDoList;
 import hwr.oop.todo.ui.menu.Menu;
-import hwr.oop.todo.ui.menu.MenuAction;
 import hwr.oop.todo.ui.menu.responses.MenuResponse;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class MenuController {
 
     private Menu currentMenu = Menus.HOME;
-    private ToDoList toDoList;
-    private IOController ioController;
+    private final ToDoList toDoList;
+    private final CLI cli;
 
-    public MenuController(ToDoList toDoList, IOController ioController){
+    public MenuController(ToDoList toDoList, CLI cli){
         this.toDoList = toDoList;
-        this.ioController = ioController;
-    }
-
-    public String askForParameter(String parameterName) {
-        ioController.printPrompt(parameterName+"?");
-        return ioController.getInputString();
+        this.cli = cli;
     }
 
     public void execute(){
-        ioController.printPrompt(currentMenu.getActions());
+        cli.displayMenuActions(currentMenu.getActions());
 
-        char key = ioController.getInputString().charAt(0);
+        char key = cli.promptNavigationKeyEntry();
 
-        MenuResponse menuResponse = currentMenu.handle(key, toDoList, this::askForParameter);
+        MenuResponse menuResponse = currentMenu.handle(key, toDoList, cli);
 
         if(!menuResponse.isSuccess()){
-            // Handle error, print to IOController
-            ioController.printPrompt("Das hat leider nicht geklappt...");
-            execute();
-            return;
+            cli.displayMessage("Das hat leider nicht geklappt...");
         }
 
         // Print optional message
         Optional<String> message = menuResponse.message();
+        message.ifPresent(cli::displayMessage);
 
-        if(message.isPresent()){
-            // Print message
-            ioController.printPrompt(message.get());
-            execute();
-            return;
-        }
+        // Print optional table
+        Optional<HashMap<String, String>> table = menuResponse.table();
+        table.ifPresent(cli::displayTable);
 
         // Check if should navigate
         Optional<Menu> nextMenu = menuResponse.navigationTarget();
-
-        if(nextMenu.isPresent()){
-            currentMenu = nextMenu.get();
-        }
+        nextMenu.ifPresent(menu -> currentMenu = menu);
 
         execute();
     }

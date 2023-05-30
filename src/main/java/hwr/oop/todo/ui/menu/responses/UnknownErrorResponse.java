@@ -5,20 +5,10 @@ import hwr.oop.todo.ui.menu.Menu;
 import java.util.HashMap;
 import java.util.Optional;
 
-public class NavigationResponse implements MenuResponse {
-    private final Menu menu;
-
-    private NavigationResponse(Menu menu){
-        this.menu = menu;
-    }
-
-    public static NavigationResponse to(Menu menu){
-        return new NavigationResponse(menu);
-    }
-
+public class UnknownErrorResponse implements MenuResponse {
     @Override
     public boolean isSuccess() {
-        return true;
+        return false;
     }
 
     @Override
@@ -28,11 +18,13 @@ public class NavigationResponse implements MenuResponse {
 
     @Override
     public Optional<Menu> navigationTarget() {
-        return Optional.of(menu);
+        return Optional.empty();
     }
 
     @Override
     public Optional<HashMap<String, String>> table() {
         return Optional.empty();
     }
+
+
 }

@@ -2,10 +2,11 @@ package hwr.oop.todo.ui.menu.responses;
 
 import hwr.oop.todo.ui.menu.Menu;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 public class InvalidKeyResponse implements MenuResponse {
-    private char invalidKey;
+    private final char invalidKey;
 
     private InvalidKeyResponse(char invalidKey){
         this.invalidKey = invalidKey;
@@ -27,6 +28,11 @@ public class InvalidKeyResponse implements MenuResponse {
 
     @Override
     public Optional<Menu> navigationTarget() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<HashMap<String, String>> table() {
         return Optional.empty();
     }
 

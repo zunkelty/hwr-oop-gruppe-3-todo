@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +22,18 @@ class MenuTest {
     public static void init(){
         toDoList = new ToDoList();
     }
+
+    ParameterProvider dummyParameterProvider = new ParameterProvider() {
+        @Override
+        public String getRequiredParameter(String name) {
+            return "";
+        }
+
+        @Override
+        public Optional<String> getOptionalParameter(String name) {
+            return Optional.empty();
+        }
+    };
 
     @Test
     void canCreateMenuWithoutActions() {
@@ -57,9 +70,14 @@ class MenuTest {
             public Optional<Menu> navigationTarget() {
                 return Optional.empty();
             }
+
+            @Override
+            public Optional<HashMap<String, String>> table() {
+                return Optional.empty();
+            }
         });
 
-        MenuResponse response = menu.handle('a', toDoList);
+        MenuResponse response = menu.handle('a', toDoList, dummyParameterProvider);
 
         assertTrue(response.isSuccess());
     }
@@ -68,7 +86,7 @@ class MenuTest {
     void cannotHandleInvalidEntries() {
         Menu menu = new Menu().on('a', "DescA").execute((toDoList, parameterProvider) -> null);
 
-        MenuResponse response = menu.handle('z', toDoList);
+        MenuResponse response = menu.handle('z', toDoList, dummyParameterProvider);
 
         assertInstanceOf(InvalidKeyResponse.class, response);
         assertFalse(response.isSuccess());
@@ -78,9 +96,9 @@ class MenuTest {
 
     @Test
     void canReturnNavigationResponse() {
-        Menu menu = new Menu().on('a', "DescA").navigateTo(Menus.HOME);
+        Menu menu = new Menu().on('a', "DescA").navigateTo(() -> Menus.HOME);
 
-        MenuResponse response = menu.handle('a', toDoList);
+        MenuResponse response = menu.handle('a', toDoList, dummyParameterProvider);
 
         assertTrue(response.navigationTarget().isPresent());
         assertEquals(Menus.HOME, response.navigationTarget().get());
@@ -90,7 +108,7 @@ class MenuTest {
     void canReturnPrintStringResponse() {
         Menu menu = new Menu().on('a', "DescA").printString("Hello World");
 
-        MenuResponse response = menu.handle('a', toDoList);
+        MenuResponse response = menu.handle('a', toDoList, dummyParameterProvider);
 
         assertTrue(response.message().isPresent());
         assertEquals("Hello World", response.message().get());
