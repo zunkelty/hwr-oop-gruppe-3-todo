@@ -45,8 +45,4 @@ public class Menu {
         }
     }
 
-    public MenuResponse handle(char key, ToDoList toDoList){
-        return this.handle(key, toDoList, name -> "");
-    }
-
 }
