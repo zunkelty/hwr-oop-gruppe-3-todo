@@ -8,7 +8,7 @@ This repository contains a student project created for an ongoing lecture on obj
 
 - [Abstract](#abstract)
 - [Features](#features)
-- [Classes and Tests](#classes-and-tests)
+- [Feature List](#featurelist)
 - [Dependencies](#dependencies)
 
 ## Abstract
@@ -23,29 +23,24 @@ This repository contains a todo application that allows users to create and mana
 - Menus: The application has menus for easy navigation and interaction.
 - Input/Output control: An Io Controller handles input and output operations.
 
-## Classes and Tests
 
-The project consists of the following classes and their corresponding test classes:
+## FeatureList
+
+| Feature        | TestCase       |
+|----------------|----------------|
+| create Project | canCreateProject |
+| create Tag with Title and Desc | canCreateTagWithDescription |
+| create Task with Title and Desc | canCreatetaskWithDescription |
+| assign Tag to Task | canAddTags |
+| unassign Tags | canRemoveTags |
+| store Task in TodoList | canStoreTask |
+| get Task from TodoList | canGetTask |
+| delete Tag | canDeleteTagFromController |
+| Menu with MenuActions | canCreateMenuwithMenuActions |
 
 
-| Class                | Description                 | Test Class                |
-|----------------------|-----------------------------|---------------------------|
-| Task                 | Represents a task            | TaskTest                  |
-| Tag                  | Represents a tag             | TagTest                   |
-| Project              | Represents a project         | ProjectTest               |
-| TodoList             | Manages the task list        | TodoListTest              |
-| TaskFactory          | creates Tasks                | TaskFactoryTest           |
-| Menu                 | Management of menu options   | MenuTest                  |
-| MenuOption           | Represents a menu option     | MenuOptionTest            |
-| SelectionResponse    | Response to selected MenuOption   | SelectionResponseTest|
-| TaskMenu             | Options on tasks             | TaskMenuTest              |
-| TagMenu              | Options on tags              | TagMenuTest               |
-| ProjectMenu          | Options on projects          | ProjectMenuTest           |
-| TaskData             | data of tasks                | TaskDataTest              |
-| ProjectData          | data of projects             | ProjectDataTest           |
-| TaskState (Enum)     | state of the tasks           | TaskStateTest             |
-| IoController         | Handles input/output         | IoControllerTest          |
-| ApplicationController | Controls the application    | ApplicationControllerTest  |
+
+
 
 ## Dependencies
 

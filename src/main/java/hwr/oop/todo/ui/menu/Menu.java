@@ -24,7 +24,8 @@ public class Menu {
         MenuAction menuAction = new MenuAction(key, description, handler);
         actions.put(key, menuAction);
     }
-    public List<MenuAction> getActions(){
+
+    public List<MenuAction> getActions() {
         return new ArrayList<>(actions.values());
     }
 
@@ -42,6 +43,10 @@ public class Menu {
                 return ErrorResponse.withUnknownCause();
             }
         }
+    }
+
+    public MenuResponse handle(char key, ToDoList toDoList){
+        return this.handle(key, toDoList, name -> "");
     }
 
 }
