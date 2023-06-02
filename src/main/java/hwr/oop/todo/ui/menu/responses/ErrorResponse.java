@@ -5,15 +5,22 @@ import hwr.oop.todo.ui.menu.Menu;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-public class InvalidKeyResponse implements MenuResponse {
-    private final char invalidKey;
-
-    private InvalidKeyResponse(char invalidKey){
-        this.invalidKey = invalidKey;
+public class ErrorResponse implements MenuResponse {
+    Optional<String> message;
+    public static ErrorResponse withMessage(String message){
+        return new ErrorResponse(message);
     }
 
-    public static InvalidKeyResponse withKey(char key){
-        return new InvalidKeyResponse(key);
+    public static ErrorResponse withUnknownCause(){
+        return new ErrorResponse();
+    }
+
+    private ErrorResponse(){
+        this.message = Optional.empty();
+    }
+
+    private ErrorResponse(String message){
+        this.message = Optional.of(message);
     }
 
     @Override
@@ -23,7 +30,7 @@ public class InvalidKeyResponse implements MenuResponse {
 
     @Override
     public Optional<String> message() {
-        return Optional.of("The key '"+invalidKey+"' is not valid.");
+        return message;
     }
 
     @Override

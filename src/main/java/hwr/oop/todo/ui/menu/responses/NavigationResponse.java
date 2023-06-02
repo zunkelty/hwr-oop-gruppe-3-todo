@@ -2,6 +2,7 @@ package hwr.oop.todo.ui.menu.responses;
 
 import hwr.oop.todo.ui.menu.Menu;
 
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class NavigationResponse implements MenuResponse {
@@ -28,5 +29,10 @@ public class NavigationResponse implements MenuResponse {
     @Override
     public Optional<Menu> navigationTarget() {
         return Optional.of(menu);
+    }
+
+    @Override
+    public Optional<LinkedHashMap<String, String>> table() {
+        return Optional.empty();
     }
 }
