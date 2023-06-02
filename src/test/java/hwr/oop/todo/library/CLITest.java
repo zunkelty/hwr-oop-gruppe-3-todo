@@ -10,7 +10,6 @@ import org.junit.jupiter.api.*;
 import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -141,12 +140,13 @@ class CLITest {
         cli.displayMenuActions(menuActions);
 
         String output = out.toString();
-        String expectedOutput =
-            "|-------------|\n"+
-            "| a: Action 1 |\n" +
-            "| b: Action 2 |\n" +
-            "| c: Action 3 |\n" +
-            "|-------------|\n";
+        String expectedOutput = """
+            |-------------|
+            | a: Action 1 |
+            | b: Action 2 |
+            | c: Action 3 |
+            |-------------|
+            """;
 
         assertEquals(output, expectedOutput);
     }

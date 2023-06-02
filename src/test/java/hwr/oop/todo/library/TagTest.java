@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
-import java.util.UUID;
 
 class TagTest {
 
