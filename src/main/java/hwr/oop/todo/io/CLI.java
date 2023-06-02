@@ -12,7 +12,10 @@ import java.io.OutputStream;
 import java.util.*;
 
 
+
+
 public class CLI implements ParameterProvider, NavigationInput, Display {
+    private static final int TABLE_VERTICAL_PADDING = 1;
 
     Scanner in;
     OutputStream out;
@@ -72,14 +75,16 @@ public class CLI implements ParameterProvider, NavigationInput, Display {
         List<String> lines = new ArrayList<>();
         table.forEach((key, value) -> lines.add(key+ ": "+value));
 
-        String longest = String.valueOf(lines.stream().max(Comparator.comparingInt(String::length)));
+        int longest = lines.stream().mapToInt(String::length).max().orElse(0);
 
         StringBuilder seperatorLine = new StringBuilder();
-        seperatorLine.append("-".repeat(Math.max(0, (int) (longest.length() * 1.0) + 7)));
+        seperatorLine.append("-".repeat(longest + TABLE_VERTICAL_PADDING * 2));
+
+        String verticalPadding = " ".repeat(TABLE_VERTICAL_PADDING);
 
         writeLine("|" + seperatorLine + "|");
         for (String line : lines) {
-            writeLine("| "+ line + " ".repeat(Math.max(0, (int) (longest.length() * 1.0) + 3 - line.length())) + " |");
+            writeLine("|"+ verticalPadding + line + " ".repeat(Math.max(0, longest - line.length())) + verticalPadding + "|");
         }
         writeLine("|" + seperatorLine + "|");
     }
@@ -97,7 +102,7 @@ public class CLI implements ParameterProvider, NavigationInput, Display {
 
     @Override
     public char promptNavigationKeyEntry() {
-        writeLine("Wähle eine Option");
+        writeLine("Press a key to continue");
         String input = readLine();
 
         if(input.trim().length() == 0){
@@ -106,4 +111,6 @@ public class CLI implements ParameterProvider, NavigationInput, Display {
 
         return input.charAt(0);
     }
+
+
 }

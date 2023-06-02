@@ -5,7 +5,7 @@ import hwr.oop.todo.library.todolist.ToDoList;
 import hwr.oop.todo.ui.menu.Menu;
 import hwr.oop.todo.ui.menu.responses.MenuResponse;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class MenuController {
@@ -35,7 +35,7 @@ public class MenuController {
         message.ifPresent(cli::displayMessage);
 
         // Print optional table
-        Optional<HashMap<String, String>> table = menuResponse.table();
+        Optional<LinkedHashMap<String, String>> table = menuResponse.table();
         table.ifPresent(cli::displayTable);
 
         // Check if should navigate

@@ -5,7 +5,7 @@ import hwr.oop.todo.ui.ParameterProvider;
 import hwr.oop.todo.ui.menu.responses.MenuResponse;
 import hwr.oop.todo.ui.menu.responses.MenuResponseInContext;
 import hwr.oop.todo.ui.menu.responses.InvalidKeyResponse;
-import hwr.oop.todo.ui.menu.responses.UnknownErrorResponse;
+import hwr.oop.todo.ui.menu.responses.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +36,11 @@ public class Menu {
         try {
             return actions.get(key).run(toDoList, parameters);
         }catch(RuntimeException exception){
-            return new UnknownErrorResponse();
+            if(exception.getClass().getPackageName().startsWith("hwr.oop.todo")){
+                return ErrorResponse.withMessage(exception.getMessage());
+            }else{
+                return ErrorResponse.withUnknownCause();
+            }
         }
     }
 

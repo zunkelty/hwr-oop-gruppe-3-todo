@@ -2,7 +2,7 @@ package hwr.oop.todo.ui.menu.responses;
 
 import hwr.oop.todo.ui.menu.Menu;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class StringResponse implements MenuResponse {
@@ -32,7 +32,7 @@ public class StringResponse implements MenuResponse {
     }
 
     @Override
-    public Optional<HashMap<String, String>> table() {
+    public Optional<LinkedHashMap<String, String>> table() {
         return Optional.empty();
     }
 
