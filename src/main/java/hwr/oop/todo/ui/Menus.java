@@ -18,23 +18,29 @@ import java.util.stream.Collectors;
 
 public class Menus {
 
+    private static final String BACK = "Zurück";
+
+    private static final String TITLE = "Titel";
+
+    private static final String DESC = "Beschreibung";
+
     public static final Menu TASK = new Menu()
             .on('a', "Aufgabe anlegen").execute(Menus::createTask)
             .on('b', "Aufgabe anzeigen (mit ID)").execute(Menus::getTask)
             .on('c', "Tag zu Aufgabe hinzufügen").execute(Menus::addTagToTask)
-            .on('z', "Zurück").navigateTo(() -> Menus.HOME);
+            .on('z', BACK).navigateTo(() -> Menus.HOME);
 
     public static final Menu PROJECT = new Menu()
             .on('a', "Projekt anlegen").execute(Menus::createProject)
             .on('b', "Projekt anzeigen (mit ID)").execute(Menus::getProject)
             .on('c', "Aufgabe zu Projekt hinzufügen").execute(Menus::addTaskToProject)
             .on('d', "Alle Aufgaben eines Projekts anzeigen").execute(Menus::getTasksOfProject)
-            .on('z', "Zurück").navigateTo(() -> Menus.HOME);
+            .on('z', BACK).navigateTo(() -> Menus.HOME);
 
     public static final Menu TAG = new Menu()
             .on('a', "Tag anlegen").execute(Menus::createTag)
             .on('b', "Tag anzeigen (mit ID)").execute(Menus::getTag)
-            .on('z', "Zurück").navigateTo(() -> Menus.HOME);
+            .on('z', BACK).navigateTo(() -> Menus.HOME);
 
     public static final Menu HOME = new Menu()
             .on('a', "Tasks anzeigen/bearbeiten").navigateTo(() -> Menus.TASK)
@@ -42,8 +48,8 @@ public class Menus {
             .on('c', "Tags anzeigen/bearbeiten").navigateTo(() -> Menus.TAG);
 
     private static StringResponse createTask(ToDoList toDoList, ParameterProvider parameters) {
-        String title = parameters.getRequiredParameter("Titel");
-        Optional<String> description = parameters.getOptionalParameter("Beschreibung");
+        String title = parameters.getRequiredParameter(TITLE);
+        Optional<String> description = parameters.getOptionalParameter(DESC);
 
         Task task = description.map(desc -> TaskFactory.createTask(title, desc)).orElseGet(() -> TaskFactory.createTask(title));
         toDoList.addTask(task);
@@ -59,8 +65,8 @@ public class Menus {
 
         return new TableResponse()
                 .withRow("ID", task.getId().toString())
-                .withRow("Titel", task.getTitle())
-                .withRow("Beschreibung", task.getDescription())
+                .withRow(TITLE, task.getTitle())
+                .withRow(DESC, task.getDescription())
                 .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
     }
 
@@ -113,8 +119,8 @@ public class Menus {
 
         for (Task task : tasks) {
             response.withRow("ID", task.getId().toString())
-                    .withRow("Titel", task.getTitle())
-                    .withRow("Beschreibung", task.getDescription())
+                    .withRow(TITLE, task.getTitle())
+                    .withRow(DESC, task.getDescription())
                     .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")))
                     .withRow("---", "---");
         }
@@ -124,7 +130,7 @@ public class Menus {
 
     private static StringResponse createTag(ToDoList toDoList, ParameterProvider parameters){
         String name = parameters.getRequiredParameter("Name");
-        String description = parameters.getOptionalParameter("Beschreibung").orElse("");
+        String description = parameters.getOptionalParameter(DESC).orElse("");
 
         Tag tag = TagFactory.createTag(name, description);
         toDoList.createTag(tag);
@@ -141,7 +147,7 @@ public class Menus {
         return new TableResponse()
                 .withRow("ID", tag.getId().toString())
                 .withRow("Name", tag.getName())
-                .withRow("Beschreibung", tag.getDescription());
+                .withRow(DESC, tag.getDescription());
     }
 
     private static StringResponse addTagToTask(ToDoList toDoList, ParameterProvider parameterProvider){
