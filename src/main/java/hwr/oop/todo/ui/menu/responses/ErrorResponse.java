@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class ErrorResponse implements MenuResponse {
-    Optional<String> message;
+    String message;
     public static ErrorResponse withMessage(String message){
         return new ErrorResponse(message);
     }
@@ -15,12 +15,10 @@ public class ErrorResponse implements MenuResponse {
         return new ErrorResponse();
     }
 
-    private ErrorResponse(){
-        this.message = Optional.empty();
-    }
+    private ErrorResponse(){}
 
     private ErrorResponse(String message){
-        this.message = Optional.of(message);
+        this.message = message;
     }
 
     @Override
@@ -30,7 +28,7 @@ public class ErrorResponse implements MenuResponse {
 
     @Override
     public Optional<String> message() {
-        return message;
+        return Optional.ofNullable(message);
     }
 
     @Override
@@ -42,6 +40,4 @@ public class ErrorResponse implements MenuResponse {
     public Optional<LinkedHashMap<String, String>> table() {
         return Optional.empty();
     }
-
-
 }

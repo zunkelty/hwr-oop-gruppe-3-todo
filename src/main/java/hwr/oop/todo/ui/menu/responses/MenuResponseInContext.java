@@ -20,12 +20,6 @@ public class MenuResponseInContext {
         menu.addAction(key, description, handler);
     }
 
-    public Menu printString(String s){
-        registerHandler((toDoList, parameters) -> StringResponse.with(s));
-        return menu;
-    }
-
-
     public Menu navigateTo(NavigateToMenuFunction nextMenu){
         registerHandler((toDoList, parameters) -> NavigationResponse.to(nextMenu.get()));
         return menu;

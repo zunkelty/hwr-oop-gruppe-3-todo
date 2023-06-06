@@ -38,11 +38,18 @@ public class MenuController {
         Optional<LinkedHashMap<String, String>> table = menuResponse.table();
         table.ifPresent(cli::displayTable);
 
-        // Check if should navigate
+        // Check if it should navigate
         Optional<Menu> nextMenu = menuResponse.navigationTarget();
         nextMenu.ifPresent(menu -> currentMenu = menu);
 
-        execute();
+        cli.displayMessage("Press 'x' to exit or any other key to continue");
+        char continueKey = cli.promptNavigationKeyEntry();
+
+        if(continueKey != 'x'){
+            execute();
+        }else{
+            cli.displayMessage("Goodbye!");
+        }
     }
 
 }
