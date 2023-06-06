@@ -37,8 +37,12 @@ public class CLI implements ParameterProvider, NavigationInput, Display {
         write(s+System.lineSeparator());
     }
 
-    private String readLine(){
-        return in.nextLine();
+    private String readLine() {
+        if (in.hasNextLine()) {
+            return in.nextLine();
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
@@ -103,14 +107,18 @@ public class CLI implements ParameterProvider, NavigationInput, Display {
     @Override
     public char promptNavigationKeyEntry() {
         writeLine("Press a key to continue");
-        String input = readLine();
 
-        if(input.trim().length() == 0){
+        Scanner scanner = new Scanner(System.in);
+
+        String input = scanner.nextLine();
+
+        if (input.trim().length() == 0) {
             return promptNavigationKeyEntry();
         }
 
         return input.charAt(0);
     }
+
 
 
 }
