@@ -42,14 +42,7 @@ public class MenuController {
         Optional<Menu> nextMenu = menuResponse.navigationTarget();
         nextMenu.ifPresent(menu -> currentMenu = menu);
 
-        cli.displayMessage("Press 'x' to exit or any other key to continue");
-        char continueKey = cli.promptNavigationKeyEntry();
-
-        if(continueKey != 'x'){
-            execute();
-        }else{
-            cli.displayMessage("Goodbye!");
-        }
+        execute();
     }
 
 }
