@@ -5,25 +5,30 @@ import hwr.oop.todo.ui.menu.Menu;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-public class StringResponse implements MenuResponse {
-    private final String response;
-
-    public StringResponse(String response){
-        this.response = response;
+public class ErrorResponse implements MenuResponse {
+    String message;
+    public static ErrorResponse withMessage(String message){
+        return new ErrorResponse(message);
     }
 
-    public static StringResponse with(String response){
-        return new StringResponse(response);
+    public static ErrorResponse withUnknownCause(){
+        return new ErrorResponse();
+    }
+
+    private ErrorResponse(){}
+
+    private ErrorResponse(String message){
+        this.message = message;
     }
 
     @Override
     public boolean isSuccess() {
-        return true;
+        return false;
     }
 
     @Override
     public Optional<String> message() {
-        return Optional.of(response);
+        return Optional.ofNullable(message);
     }
 
     @Override
@@ -35,6 +40,4 @@ public class StringResponse implements MenuResponse {
     public Optional<LinkedHashMap<String, String>> table() {
         return Optional.empty();
     }
-
-
 }

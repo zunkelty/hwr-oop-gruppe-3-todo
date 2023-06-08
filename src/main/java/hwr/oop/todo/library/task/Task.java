@@ -8,10 +8,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Task {
-    private String title;
-    private String description;
-    private TaskState state;
-    private List<Tag> tags = new ArrayList<>();
+    private final String title;
+    private final String description;
+    private final TaskState state;
+    private final List<Tag> tags = new ArrayList<>();
 
     private final UUID id;
 
@@ -39,11 +39,11 @@ public class Task {
     }
 
     public void addTag(Tag tag) {
-        this.tags.add(tag);
+        tags.add(tag);
     }
 
     public void removeTag(Tag tag) {
-        this.tags.remove(tag);
+        tags.remove(tag);
     }
 
     public UUID getId(){
