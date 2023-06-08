@@ -1,11 +1,9 @@
 package hwr.oop.todo.library.project;
 
-import hwr.oop.todo.persistence.Persistable;
-
 import java.util.Objects;
 import java.util.UUID;
 
-public class Project extends ProjectData implements Persistable {
+public class Project extends ProjectData {
     private UUID id;
 
     public Project(UUID uuid, String name) {
@@ -35,13 +33,4 @@ public class Project extends ProjectData implements Persistable {
         return Objects.hash(super.hashCode(), id);
     }
 
-    @Override
-    public String toCSV() {
-        return this.getId() + "," + this.getName();
-    }
-
-    @Override
-    public void fromCSV(String csv) {
-
-    }
 }

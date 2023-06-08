@@ -2,7 +2,6 @@ package hwr.oop.todo;
 
 import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.persistence.FileAdapter;
-import hwr.oop.todo.persistence.Persistable;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
