@@ -13,6 +13,7 @@ public class AppController {
     public static final MenuController ui = new MenuController(toDoList, io);
 
     public static void main(String[] args){
+        AppConfig.loadProperties();
         ui.execute();
     }
 

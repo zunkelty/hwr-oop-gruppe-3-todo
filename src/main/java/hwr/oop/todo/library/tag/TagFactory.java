@@ -13,6 +13,10 @@ public class TagFactory{
         return new Tag(id, name);
     }
 
+    public static Tag createTag(UUID id, String title, String description){
+        return new Tag(id, title, description);
+    }
+
     private TagFactory() {
     }
 }

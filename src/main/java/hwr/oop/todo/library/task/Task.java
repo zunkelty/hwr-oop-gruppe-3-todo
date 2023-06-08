@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Task {
     private final String title;
     private final String description;
-    private final TaskState state;
+    private TaskState state;
     private final List<Tag> tags = new ArrayList<>();
 
     private final UUID id;
@@ -61,5 +61,13 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(title, description, state, tags, id);
+    }
+
+    public TaskState getState() {
+        return state;
+    }
+
+    public void setState(TaskState state) {
+        this.state = state;
     }
 }
