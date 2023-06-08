@@ -42,7 +42,12 @@ This repository contains a todo application that allows users to create and mana
 
 
 
-## Dependencies
+## Additional Dependencies
 
-The project does not have any additional dependencies beyond the core Java libraries.
+| Number | Dependency Name | Dependency Description | Why is it necessary? |
+|--------|-----------------|------------------------|----------------------|
+| 1      | mysql-connector-j-8.0.33 | Driver for connecting to MySQL Databases|Used for the DatabaseAdapter|
+
+### How to add mysql-connector to the project
+Navigate to `File ➡ Project Structure ➡ Modules ➡ Dependencies` and add the JAR File
 
