@@ -5,15 +5,16 @@ import hwr.oop.todo.ui.menu.Menu;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-public class StringResponse implements MenuResponse {
-    private final String response;
+public class TableResponse implements MenuResponse{
+    private final LinkedHashMap<String, String> response;
 
-    public StringResponse(String response){
-        this.response = response;
+    public TableResponse(){
+        response = new LinkedHashMap<>();
     }
 
-    public static StringResponse with(String response){
-        return new StringResponse(response);
+    public TableResponse withRow(String name, String value){
+        response.put(name, value);
+        return this;
     }
 
     @Override
@@ -23,7 +24,8 @@ public class StringResponse implements MenuResponse {
 
     @Override
     public Optional<String> message() {
-        return Optional.of(response);
+        return Optional.empty();
+
     }
 
     @Override
@@ -33,8 +35,6 @@ public class StringResponse implements MenuResponse {
 
     @Override
     public Optional<LinkedHashMap<String, String>> table() {
-        return Optional.empty();
+        return Optional.of(response);
     }
-
-
 }
