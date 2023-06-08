@@ -5,8 +5,8 @@ import java.util.UUID;
 
 public class Tag {
     private final UUID id;
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
 
     Tag(UUID id, String name, String description){
         this.id = id;
@@ -42,4 +42,13 @@ public class Tag {
     public int hashCode() {
         return Objects.hash(id, name, description);
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

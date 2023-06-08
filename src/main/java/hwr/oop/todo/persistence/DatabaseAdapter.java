@@ -31,7 +31,6 @@ public class DatabaseAdapter implements Persistence {
             String url = AppConfig.getProperty("db.url");
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            System.out.println(e);
             throw new FailedDatabaseConnectionException();
         }
     }
@@ -61,7 +60,7 @@ public class DatabaseAdapter implements Persistence {
     public void updateTask(Task task) {
         try {
             Statement statement = connection.createStatement();
-            String sql = String.format("UPDATE Tasks SET title = '%s', description = '%s', state = '%s' WHERE tasks.id = '%s'", task.getTitle(), task.getDescription(), task.getState(), task.getId());
+            String sql = String.format("UPDATE Tasks SET title = '%s', description = '%s', state = '%s' WHERE id = '%s'", task.getTitle(), task.getDescription(), task.getState(), task.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -72,11 +71,7 @@ public class DatabaseAdapter implements Persistence {
     public void insertTask(Task task) {
         try {
             Statement statement = connection.createStatement();
-            System.out.println("a");
-            //String sql = "INSERT INTO Tasks (id, title, description, state) VALUES (" + task.getId() + ", " + task.getTitle() + ", " + task.getDescription() + ", " + task.getState() + ")";
             String sql = String.format("INSERT INTO Tasks (id, title, description, state) VALUES ('%s', '%s', '%s', '%s')", task.getId(), task.getTitle(), task.getDescription(), task.getState());
-
-            System.out.println(sql);
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {

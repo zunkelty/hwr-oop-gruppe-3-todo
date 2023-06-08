@@ -5,17 +5,17 @@ import java.util.Properties;
 
 public class AppConfig {
     private static Properties properties;
-
-    private AppConfig() {
-        throw new IllegalStateException("Utility class");
+    private static String filePath = "src/AppConfig.properties";
+    public AppConfig(String filePath) {
+        this.filePath = filePath;
     }
 
-    static void loadProperties() {
+    public static void loadProperties() {
         properties = new Properties();
-        try(FileInputStream fileInputStream = new FileInputStream("src/AppConfig.properties")) {
+        try(FileInputStream fileInputStream = new FileInputStream(filePath)) {
             properties.load(fileInputStream);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Could not load properties file");
         }
     }
 

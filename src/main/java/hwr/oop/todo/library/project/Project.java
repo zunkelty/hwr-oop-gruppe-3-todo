@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class Project {
     private final UUID id;
-    private final String name;
+    private String name;
     private final List<Task> tasks = new ArrayList<>();
 
     Project(UUID id, String name){
@@ -44,5 +44,9 @@ public class Project {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, tasks);
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -8,8 +8,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Task {
-    private final String title;
-    private final String description;
+    private String title;
+    private String description;
     private TaskState state;
     private final List<Tag> tags = new ArrayList<>();
 
@@ -69,5 +69,13 @@ public class Task {
 
     public void setState(TaskState state) {
         this.state = state;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
