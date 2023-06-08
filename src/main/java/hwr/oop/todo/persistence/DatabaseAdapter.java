@@ -19,12 +19,19 @@ public class DatabaseAdapter implements Persistence {
     private final Connection connection;
 
     public DatabaseAdapter() {
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         try {
             String password = AppConfig.getProperty("db.password");
-            String user = AppConfig.getProperty("db.user");
+            String user = AppConfig.getProperty("db.username");
             String url = AppConfig.getProperty("db.url");
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
+            System.out.println(e);
             throw new FailedDatabaseConnectionException();
         }
     }
@@ -35,7 +42,7 @@ public class DatabaseAdapter implements Persistence {
     public Task getTask(UUID id) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "SELECT * FROM tasks WHERE id = " + id;
+            String sql = String.format("SELECT * FROM Tasks WHERE id = '%s'", id);
             ResultSet resultSet = statement.executeQuery(sql);
             Task task = null;
             if (resultSet.next()) {
@@ -54,7 +61,7 @@ public class DatabaseAdapter implements Persistence {
     public void updateTask(Task task) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "UPDATE tasks SET title = " + task.getTitle() + ", description = " + task.getDescription() + ", state = " + task.getState() + " WHERE tasks.id = " + task.getId();
+            String sql = String.format("UPDATE Tasks SET title = '%s', description = '%s', state = '%s' WHERE tasks.id = '%s'", task.getTitle(), task.getDescription(), task.getState(), task.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -65,7 +72,11 @@ public class DatabaseAdapter implements Persistence {
     public void insertTask(Task task) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "INSERT INTO tasks (id, title, description, state) VALUES (" + task.getId() + ", " + task.getTitle() + ", " + task.getDescription() + ", " + task.getState() + ")";
+            System.out.println("a");
+            //String sql = "INSERT INTO Tasks (id, title, description, state) VALUES (" + task.getId() + ", " + task.getTitle() + ", " + task.getDescription() + ", " + task.getState() + ")";
+            String sql = String.format("INSERT INTO Tasks (id, title, description, state) VALUES ('%s', '%s', '%s', '%s')", task.getId(), task.getTitle(), task.getDescription(), task.getState());
+
+            System.out.println(sql);
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -76,7 +87,7 @@ public class DatabaseAdapter implements Persistence {
     public void deleteTask(Task task) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "DELETE FROM tasks WHERE id = " + task.getId();
+            String sql = String.format("DELETE FROM Tasks WHERE id = '%s'", task.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -90,7 +101,7 @@ public class DatabaseAdapter implements Persistence {
     public Project getProject(UUID id) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "SELECT * FROM projects WHERE id = " + id;
+            String sql = String.format("SELECT * FROM Projects WHERE id = '%s'", id);
             ResultSet resultSet = statement.executeQuery(sql);
             Project project = null;
             if (resultSet.next()) {
@@ -108,7 +119,7 @@ public class DatabaseAdapter implements Persistence {
     public void updateProject(Project project) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "UPDATE projects SET name = " + project.getName()  + " WHERE id = " + project.getId();
+            String sql = String.format("UPDATE Projects SET name = '%s' WHERE id = '%s'", project.getName(), project.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -119,7 +130,7 @@ public class DatabaseAdapter implements Persistence {
     public void insertProject(Project project) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "INSERT INTO projects (id, name) VALUES (" + project.getId() + ", " + project.getName() + ")";
+            String sql = String.format("INSERT INTO Projects (id, name) VALUES ('%s', '%s')", project.getId(), project.getName());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -130,7 +141,7 @@ public class DatabaseAdapter implements Persistence {
     public void deleteProject(Project project) {
         try {
             Statement statement = connection.createStatement();
-            String sql = "DELETE FROM projects WHERE id = " + project.getId();
+            String sql = String.format("DELETE FROM Projects WHERE id = '%s'", project.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -143,7 +154,7 @@ public class DatabaseAdapter implements Persistence {
     public Tag getTag (UUID id){
         try {
             Statement statement = connection.createStatement();
-            String sql = "SELECT * FROM tags WHERE id = " + id;
+            String sql = String.format("SELECT * FROM Tags WHERE id = '%s'", id);
             ResultSet resultSet = statement.executeQuery(sql);
             Tag tag = null;
             if (resultSet.next()) {
@@ -162,7 +173,7 @@ public class DatabaseAdapter implements Persistence {
     public void updateTag (Tag tag){
         try {
             Statement statement = connection.createStatement();
-            String sql = "UPDATE tags SET name = " + tag.getName() + ", description=" + tag.getDescription() + " WHERE id = " + tag.getId();
+            String sql = String.format("UPDATE Tags SET name = '%s', description = '%s' WHERE id = '%s'", tag.getName(), tag.getDescription(), tag.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -173,7 +184,7 @@ public class DatabaseAdapter implements Persistence {
     public void insertTag (Tag tag){
         try {
             Statement statement = connection.createStatement();
-            String sql = "INSERT INTO tags (id, name, description) VALUES (" + tag.getId() + ", " + tag.getName() + ", " + tag.getDescription() + ")";
+            String sql = String.format("INSERT INTO Tags (id, name, description) VALUES ('%s', '%s', '%s')", tag.getId(), tag.getName(), tag.getDescription());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
@@ -184,7 +195,7 @@ public class DatabaseAdapter implements Persistence {
     public void deleteTag (Tag tag){
         try {
             Statement statement = connection.createStatement();
-            String sql = "DELETE FROM tags WHERE id = " + tag.getId();
+            String sql = String.format("DELETE FROM Tags WHERE id = '%s'", tag.getId());
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
