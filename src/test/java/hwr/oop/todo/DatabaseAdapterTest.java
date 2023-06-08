@@ -3,9 +3,7 @@ package hwr.oop.todo;
 
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
-import hwr.oop.todo.library.task.TaskState;
 import hwr.oop.todo.persistence.DatabaseAdapter;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -45,7 +43,4 @@ class DatabaseAdapterTest {
             fail("Exception occurred: " + e.getMessage());
         }
     }
-
-    //test for getting task by id
-
 }

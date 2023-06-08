@@ -8,33 +8,21 @@ import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
 import hwr.oop.todo.library.task.TaskState;
+import hwr.oop.todo.library.todolist.ToDoList;
 
 import java.sql.*;
 import java.util.UUID;
 
-public class DatabaseAdapter implements PersistenceAdapter {
-
-    private final Connection connection;
-import hwr.oop.todo.library.project.Project;
-import hwr.oop.todo.library.tag.Tag;
-import hwr.oop.todo.library.task.Task;
-import hwr.oop.todo.library.todolist.ToDoList;
 
 public class DatabaseAdapter implements Persistence {
-    @Override
-    public void insertProject(Project project) {
 
-    }
-
-    @Override
-    public void insertTag(Tag tag) {
+    private final Connection connection;
 
     public DatabaseAdapter() {
         try {
             String password = AppConfig.getProperty("db.password");
             String user = AppConfig.getProperty("db.user");
             String url = AppConfig.getProperty("db.url");
-            System.out.println(user);
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             throw new FailedDatabaseConnectionException();
@@ -204,4 +192,8 @@ public class DatabaseAdapter implements Persistence {
         }
     }
 
+    @Override
+    public ToDoList loadToDoList() {
+        return new ToDoList();
+    }
 }
