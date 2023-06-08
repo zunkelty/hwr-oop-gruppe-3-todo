@@ -21,16 +21,15 @@ public class Project {
         tasks.add(task);
     }
 
-    public Project(UUID uuid, String name) {
-        super(name);
-        this.id = uuid;
+    public List<Task> getTasks(){
+        return tasks;
     }
 
-    public static Project fromData(UUID uuid, ProjectData data) {
-        return new Project(uuid, data.getName());
+    public String getName(){
+        return name;
     }
 
-    public UUID getId() {
+    public UUID getId(){
         return id;
     }
 
@@ -38,23 +37,12 @@ public class Project {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Project project = (Project) o;
-        return Objects.equals(id, project.id);
+        Project that = (Project) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(tasks, that.tasks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
-    }
-
-    @Override
-    public String toCSV() {
-        return this.getId() + "," + this.getName();
-    }
-
-    @Override
-    public void fromCSV(String csv) {
-
+        return Objects.hash(id, name, tasks);
     }
 }
