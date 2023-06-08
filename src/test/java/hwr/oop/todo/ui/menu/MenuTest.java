@@ -1,9 +1,10 @@
 package hwr.oop.todo.ui.menu;
 
+import hwr.oop.todo.cli.ui.menu.Menu;
 import hwr.oop.todo.library.todolist.DuplicateIdException;
-import hwr.oop.todo.ui.menu.responses.ErrorResponse;
-import hwr.oop.todo.ui.menu.responses.InvalidKeyResponse;
-import hwr.oop.todo.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.cli.ui.menu.responses.ErrorResponse;
+import hwr.oop.todo.cli.ui.menu.responses.InvalidKeyResponse;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

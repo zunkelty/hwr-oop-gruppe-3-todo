@@ -15,6 +15,19 @@ import java.util.UUID;
 public class DatabaseAdapter implements PersistenceAdapter {
 
     private final Connection connection;
+import hwr.oop.todo.library.project.Project;
+import hwr.oop.todo.library.tag.Tag;
+import hwr.oop.todo.library.task.Task;
+import hwr.oop.todo.library.todolist.ToDoList;
+
+public class DatabaseAdapter implements Persistence {
+    @Override
+    public void insertProject(Project project) {
+
+    }
+
+    @Override
+    public void insertTag(Tag tag) {
 
     public DatabaseAdapter() {
         try {

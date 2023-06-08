@@ -1,5 +1,8 @@
 package hwr.oop.todo.ui;
 
+import hwr.oop.todo.application.usecases.UseCases;
+import hwr.oop.todo.cli.ui.Menus;
+import hwr.oop.todo.cli.ui.ParameterProvider;
 import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.library.project.ProjectFactory;
 import hwr.oop.todo.library.tag.Tag;
@@ -7,9 +10,10 @@ import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
 import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.ui.menu.Menu;
-import hwr.oop.todo.ui.menu.MenuAction;
-import hwr.oop.todo.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.cli.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.MenuAction;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.persistence.Persistence;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -18,6 +22,37 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MenusTest {
+    Persistence mockPersistence = new Persistence() {
+        @Override
+        public void insertProject(Project project) {
+
+        }
+
+        @Override
+        public void insertTag(Tag tag) {
+
+        }
+
+        @Override
+        public void insertTask(Task task) {
+
+        }
+
+        @Override
+        public ToDoList loadToDoList() {
+            return new ToDoList();
+        }
+
+        @Override
+        public void updateProject(Project project) {
+
+        }
+
+        @Override
+        public void updateTask(Task task) {
+
+        }
+    };
 
     private static class SequentialInputsParameterProvider implements ParameterProvider {
         private final List<String> inputs = new ArrayList<>();
@@ -43,12 +78,9 @@ class MenusTest {
 
     @Test
     void AllSubmenusAreReachableFromHome() {
-        ToDoList toDoList = new ToDoList();
-        ParameterProvider parameterProvider = new SequentialInputsParameterProvider();
-
         List<Menu> navigationTargets = Menus.HOME.getActions()
                 .stream()
-                .map(menuAction -> menuAction.run(toDoList, parameterProvider).navigationTarget())
+                .map(menuAction -> menuAction.run(null, null).navigationTarget())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -59,17 +91,14 @@ class MenusTest {
 
     @Test
     void AllSubmenusCanGoBackToHome(){
-        ToDoList toDoList = new ToDoList();
-        ParameterProvider parameterProvider = new SequentialInputsParameterProvider();
-
         Menus.HOME.getActions()
                 .stream()
-                .map(menuAction -> menuAction.run(toDoList, parameterProvider).navigationTarget())
+                .map(menuAction -> menuAction.run(null, null).navigationTarget())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(menu -> {
                     MenuAction backAction = menu.getActions().get(menu.getActions().size() - 1);
-                    MenuResponse response = backAction.run(toDoList, parameterProvider);
+                    MenuResponse response = backAction.run(null, null);
 
                     assertTrue(response.navigationTarget().isPresent());
                     assertEquals(Menus.HOME, response.navigationTarget().get());
@@ -78,24 +107,24 @@ class MenusTest {
 
     @Test
     void CanCreateTask(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Task");
 
-        MenuResponse response = Menus.TASK.handle('a', toDoList, parameterProvider);
+        MenuResponse response = Menus.TASK.handle('a', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
     }
 
     @Test
     void CanGetTask(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
         Task task = TaskFactory.createTask("Test Task");
-        toDoList.addTask(task);
+        useCases.getCreateTaskUseCase().insertTask(task);
 
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
 
-        MenuResponse response = Menus.TASK.handle('b', toDoList, parameterProvider);
+        MenuResponse response = Menus.TASK.handle('b', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
 
@@ -114,24 +143,24 @@ class MenusTest {
 
     @Test
     void CanCreateTag(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Tag");
 
-        MenuResponse response = Menus.TAG.handle('a', toDoList, parameterProvider);
+        MenuResponse response = Menus.TAG.handle('a', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
     }
 
     @Test
     void CanGetTag(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
         Tag tag = TagFactory.createTag("Tag Name");
-        toDoList.createTag(tag);
+        useCases.getCreateTagUseCase().insertTag(tag);
 
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider(tag.getId().toString());
 
-        MenuResponse response = Menus.TAG.handle('b', toDoList, parameterProvider);
+        MenuResponse response = Menus.TAG.handle('b', useCases, parameterProvider);
 
         HashMap<String, String> expectedTable = new HashMap<>(Map.of(
                 "Name", "Tag Name",
@@ -149,24 +178,24 @@ class MenusTest {
 
     @Test
     void CanCreateProject(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Project");
 
-        MenuResponse response = Menus.PROJECT.handle('a', toDoList, parameterProvider);
+        MenuResponse response = Menus.PROJECT.handle('a', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
     }
 
     @Test
     void CanGetProject(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
         Project project = ProjectFactory.createProject("Test Project");
-        toDoList.createProject(project);
+        useCases.getCreateProjectUseCase().createProject(project);
 
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider(project.getId().toString());
 
-        MenuResponse response = Menus.PROJECT.handle('b', toDoList, parameterProvider);
+        MenuResponse response = Menus.PROJECT.handle('b', useCases, parameterProvider);
 
         HashMap<String, String> expectedTable = new HashMap<>(Map.of(
                 "Name", "Test Project",
@@ -184,56 +213,57 @@ class MenusTest {
 
     @Test
     void CanAddTaskToProject(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
         Project project = ProjectFactory.createProject("Test Project");
-        toDoList.createProject(project);
+        useCases.getCreateProjectUseCase().createProject(project);
 
         Task task = TaskFactory.createTask("Test Task");
-        toDoList.addTask(task);
+        useCases.getCreateTaskUseCase().insertTask(task);
+
+        useCases.getAddTaskToProjectUseCase().addTaskToProject(project.getId(), task.getId());
 
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider(project.getId().toString(), task.getId().toString());
-
-        MenuResponse response = Menus.PROJECT.handle('c', toDoList, parameterProvider);
+        MenuResponse response = Menus.PROJECT.handle('c', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
     }
 
     @Test
     void CanAddTagToTask(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
         Tag tag = TagFactory.createTag("Tag Name");
-        toDoList.createTag(tag);
+        useCases.getCreateTagUseCase().insertTag(tag);
 
         Task task = TaskFactory.createTask("Test Task");
-        toDoList.addTask(task);
+        useCases.getCreateTaskUseCase().insertTask(task);
+
+        useCases.getAddTagToTaskUseCase().addTagToTask(task.getId(), tag.getId());
 
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider(tag.getId().toString(), task.getId().toString());
-
-        MenuResponse response = Menus.TASK.handle('c', toDoList, parameterProvider);
+        MenuResponse response = Menus.TASK.handle('c', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
     }
 
     @Test
     void CanGetTasksOfProject(){
-        ToDoList toDoList = new ToDoList();
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
         Project project = ProjectFactory.createProject("Test Project");
-        toDoList.createProject(project);
+        useCases.getCreateProjectUseCase().createProject(project);
 
         Task task = TaskFactory.createTask("Test Task");
-        toDoList.addTask(task);
+        useCases.getCreateTaskUseCase().insertTask(task);
 
-        project.addTask(task);
+        useCases.getAddTaskToProjectUseCase().addTaskToProject(project.getId(), task.getId());
 
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider(project.getId().toString());
 
-        MenuResponse response = Menus.PROJECT.handle('d', toDoList, parameterProvider);
+        MenuResponse response = Menus.PROJECT.handle('d', useCases, parameterProvider);
 
         HashMap<String, String> expectedTable = new HashMap<>(Map.of(
-                "Projekt", "Test Project",
                 "ID", task.getId().toString(),
                 "Titel", "Test Task",
                 "Beschreibung", "",

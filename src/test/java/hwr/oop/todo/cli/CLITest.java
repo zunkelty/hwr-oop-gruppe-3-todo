@@ -1,40 +1,28 @@
-package hwr.oop.todo;
+package hwr.oop.todo.cli;
 
-import hwr.oop.todo.application.AppController;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-class AppControllerTest {
-    private final static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static final PrintStream originalOut = System.out;
-    private static final InputStream originalIn = System.in;
-
-    @BeforeAll
-    static void setup() {
-        System.setOut(new PrintStream(outContent));
-        System.setIn(new ByteArrayInputStream("q".getBytes()));
-    }
-
-    @AfterAll
-    static void restore() {
-        System.setOut(originalOut);
-        System.setIn(originalIn);
+public class CLITest {
+    private InputStream createInputStreamForInput(String input) {
+        byte[] inputInBytes = input.getBytes();
+        return new ByteArrayInputStream(inputInBytes);
     }
 
     @Test
-    void appControllerPrintsHomeMenu() {
-        AppController.main(new String[]{});
+    void printsToOutputStream() {
+        InputStream in = createInputStreamForInput("q");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        String output = outContent.toString();
+        CLI cli = new CLI(in, out, null);
+        cli.start();
+
+        String output = out.toString();
         String expected =
                 "|---------------------------------|" + System.lineSeparator() +
                         "| a: Tasks anzeigen/bearbeiten    |" + System.lineSeparator() +
@@ -48,4 +36,3 @@ class AppControllerTest {
         assertEquals(expected, output);
     }
 }
-

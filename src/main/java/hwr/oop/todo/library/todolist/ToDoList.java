@@ -19,7 +19,7 @@ public class ToDoList {
     }
 
     public Task getTask(UUID id){
-        if(!tasks.containsKey(id)) throw new NotFoundException();
+        if(!tasks.containsKey(id)) throw NotFoundException.withItemName("Task");
         return tasks.get(id);
     }
 
@@ -30,12 +30,12 @@ public class ToDoList {
     }
 
     public Project getProject(UUID id){
-        if(!projects.containsKey(id)) throw new NotFoundException();
+        if(!projects.containsKey(id)) throw NotFoundException.withItemName("Project");
         return projects.get(id);
     }
 
     public Tag getTag(UUID id) {
-        if(!tags.containsKey(id)) throw new NotFoundException();
+        if(!tags.containsKey(id)) throw NotFoundException.withItemName("Tag");
         return tags.get(id);
     }
 

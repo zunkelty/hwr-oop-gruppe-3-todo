@@ -1,23 +1,21 @@
-package hwr.oop.todo.application.useCases;
+package hwr.oop.todo.application.usecases;
 
-import hwr.oop.todo.library.project.Project;
+import hwr.oop.todo.application.ports.InsertTaskPort;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.persistence.ports.out.InsertProjectOutPort;
-import hwr.oop.todo.persistence.ports.out.InsertTaskOutPort;
 
 public class CreateTaskUseCase {
 
     private final ToDoList toDoList;
-    private final InsertTaskOutPort insertTaskOutPort;
+    private final InsertTaskPort insertTaskPort;
 
-    public CreateTaskUseCase(ToDoList toDoList, InsertTaskOutPort insertTaskOutPort) {
-        this.insertTaskOutPort = insertTaskOutPort;
+    public CreateTaskUseCase(ToDoList toDoList, InsertTaskPort insertTaskPort) {
+        this.insertTaskPort = insertTaskPort;
         this.toDoList = toDoList;
     }
 
     public void insertTask(Task task) {
         toDoList.addTask(task);
-        insertTaskOutPort.insertTask(task);
+        insertTaskPort.insertTask(task);
     }
 }
