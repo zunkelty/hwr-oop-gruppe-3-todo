@@ -98,12 +98,11 @@ class CLITest {
         cli.displayTable(table);
 
         String output = out.toString();
-        String expectedOutput = """
-            |--------------|
-            | Key1: Value1 |
-            | Key2: Value2 |
-            |--------------|
-            """;
+        String expectedOutput =
+                "|--------------|"+System.lineSeparator()+
+                "| Key1: Value1 |"+System.lineSeparator()+
+                "| Key2: Value2 |"+System.lineSeparator()+
+                "|--------------|"+System.lineSeparator();
 
         assertEquals(expectedOutput, output);
     }
@@ -139,13 +138,12 @@ class CLITest {
         cli.displayMenuActions(menuActions);
 
         String output = out.toString();
-        String expectedOutput = """
-            |-------------|
-            | a: Action 1 |
-            | b: Action 2 |
-            | c: Action 3 |
-            |-------------|
-            """;
+        String expectedOutput =
+                "|-------------|"+System.lineSeparator()+
+                "| a: Action 1 |"+System.lineSeparator()+
+                "| b: Action 2 |"+System.lineSeparator()+
+                "| c: Action 3 |"+System.lineSeparator()+
+                "|-------------|"+System.lineSeparator();
 
         assertEquals(output, expectedOutput);
     }
