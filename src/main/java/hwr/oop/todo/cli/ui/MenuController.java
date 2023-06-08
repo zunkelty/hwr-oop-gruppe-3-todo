@@ -1,9 +1,9 @@
-package hwr.oop.todo.ui;
+package hwr.oop.todo.cli.ui;
 
-import hwr.oop.todo.io.CLI;
-import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.ui.menu.Menu;
-import hwr.oop.todo.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.application.usecases.UseCases;
+import hwr.oop.todo.cli.IO;
+import hwr.oop.todo.cli.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -11,11 +11,11 @@ import java.util.Optional;
 public class MenuController {
 
     private Menu currentMenu = Menus.HOME;
-    private final ToDoList toDoList;
-    private final CLI cli;
+    private final UseCases useCases;
+    private final IO cli;
 
-    public MenuController(ToDoList toDoList, CLI cli){
-        this.toDoList = toDoList;
+    public MenuController(UseCases useCases, IO cli){
+        this.useCases = useCases;
         this.cli = cli;
     }
 
@@ -24,7 +24,7 @@ public class MenuController {
 
         char key = cli.promptNavigationKeyEntry();
 
-        MenuResponse menuResponse = currentMenu.handle(key, toDoList, cli);
+        MenuResponse menuResponse = currentMenu.handle(key, useCases, cli);
 
         if(!menuResponse.isSuccess()){
             cli.displayMessage("Das hat leider nicht geklappt...");
@@ -42,7 +42,11 @@ public class MenuController {
         Optional<Menu> nextMenu = menuResponse.navigationTarget();
         nextMenu.ifPresent(menu -> currentMenu = menu);
 
-        execute();
+        if(menuResponse.shouldQuit()){
+            cli.displayMessage("Auf Wiedersehen!");
+        }else{
+            execute();
+        }
     }
 
 }

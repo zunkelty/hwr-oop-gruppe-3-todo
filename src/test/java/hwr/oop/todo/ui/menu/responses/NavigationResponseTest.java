@@ -1,6 +1,7 @@
 package hwr.oop.todo.ui.menu.responses;
 
-import hwr.oop.todo.ui.Menus;
+import hwr.oop.todo.cli.ui.Menus;
+import hwr.oop.todo.cli.ui.menu.responses.NavigationResponse;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

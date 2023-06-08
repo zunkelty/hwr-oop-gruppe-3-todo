@@ -1,19 +1,19 @@
 package hwr.oop.todo.application;
 
-import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.io.CLI;
-import hwr.oop.todo.ui.MenuController;
+import hwr.oop.todo.application.usecases.UseCases;
+import hwr.oop.todo.cli.CLI;
+import hwr.oop.todo.persistence.DatabaseAdapter;
 
 public class AppController {
-    public static final ToDoList toDoList = new ToDoList();
-
-    @SuppressWarnings("java:S106")
-    public static final CLI io = new CLI(System.in, System.out);
-
-    public static final MenuController ui = new MenuController(toDoList, io);
-
     public static void main(String[] args){
-        ui.execute();
+        DatabaseAdapter db = new DatabaseAdapter();
+
+        UseCases useCases = UseCases.initialize(db);
+
+        @SuppressWarnings("java:S106")
+        CLI cli = new CLI(System.in, System.out, useCases);
+
+        cli.start();
     }
 
 }

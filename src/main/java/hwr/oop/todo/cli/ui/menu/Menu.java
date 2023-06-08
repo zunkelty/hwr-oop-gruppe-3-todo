@@ -1,11 +1,11 @@
-package hwr.oop.todo.ui.menu;
+package hwr.oop.todo.cli.ui.menu;
 
-import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.ui.ParameterProvider;
-import hwr.oop.todo.ui.menu.responses.MenuResponse;
-import hwr.oop.todo.ui.menu.responses.MenuResponseInContext;
-import hwr.oop.todo.ui.menu.responses.InvalidKeyResponse;
-import hwr.oop.todo.ui.menu.responses.ErrorResponse;
+import hwr.oop.todo.application.usecases.UseCases;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponseInContext;
+import hwr.oop.todo.cli.ui.ParameterProvider;
+import hwr.oop.todo.cli.ui.menu.responses.InvalidKeyResponse;
+import hwr.oop.todo.cli.ui.menu.responses.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,13 +29,13 @@ public class Menu {
         return new ArrayList<>(actions.values());
     }
 
-    public MenuResponse handle(char key, ToDoList toDoList, ParameterProvider parameters){
+    public MenuResponse handle(char key, UseCases useCases, ParameterProvider parameters){
         if(!actions.containsKey(key)){
             return InvalidKeyResponse.withKey(key);
         }
 
         try {
-            return actions.get(key).run(toDoList, parameters);
+            return actions.get(key).run(useCases, parameters);
         }catch(RuntimeException exception){
             if(exception.getClass().getPackageName().startsWith("hwr.oop.todo")){
                 return ErrorResponse.withMessage(exception.getMessage());

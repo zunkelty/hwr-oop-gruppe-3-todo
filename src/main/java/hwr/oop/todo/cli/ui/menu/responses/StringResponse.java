@@ -1,6 +1,6 @@
-package hwr.oop.todo.ui.menu.responses;
+package hwr.oop.todo.cli.ui.menu.responses;
 
-import hwr.oop.todo.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.Menu;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -19,6 +19,11 @@ public class StringResponse implements MenuResponse {
     @Override
     public boolean isSuccess() {
         return true;
+    }
+
+    @Override
+    public boolean shouldQuit() {
+        return false;
     }
 
     @Override

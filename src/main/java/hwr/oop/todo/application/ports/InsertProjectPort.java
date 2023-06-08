@@ -1,7 +1,7 @@
-package hwr.oop.todo.persistence.ports.out;
+package hwr.oop.todo.application.ports;
 
 import hwr.oop.todo.library.project.Project;
 
-public interface InsertProjectOutPort {
+public interface InsertProjectPort {
     void insertProject(Project project);
 }

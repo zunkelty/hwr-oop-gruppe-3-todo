@@ -1,9 +1,9 @@
-package hwr.oop.todo.io;
+package hwr.oop.todo.cli;
 
-import hwr.oop.todo.ui.menu.FailedWriteException;
-import hwr.oop.todo.ui.menu.MenuAction;
-import hwr.oop.todo.ui.menu.MenuActionHandlerFunction;
-import hwr.oop.todo.ui.menu.responses.StringResponse;
+import hwr.oop.todo.cli.ui.menu.FailedWriteException;
+import hwr.oop.todo.cli.ui.menu.MenuAction;
+import hwr.oop.todo.cli.ui.menu.MenuActionHandlerFunction;
+import hwr.oop.todo.cli.ui.menu.responses.StringResponse;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class CLITest {
+class IOTest {
 
     private InputStream createInputStreamForInput(String input) {
         byte[] inputInBytes = input.getBytes();
@@ -24,7 +24,7 @@ class CLITest {
     void canAskForRequiredParameter(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = createInputStreamForInput("a");
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         cli.getRequiredParameter("Name");
 
@@ -37,7 +37,7 @@ class CLITest {
     void willNotAccessEmptyRequiredParameter(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = createInputStreamForInput(" ");
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         cli.getRequiredParameter("Name");
 
@@ -49,7 +49,7 @@ class CLITest {
     void canAskForOptionalParameter(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = createInputStreamForInput("a");
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         cli.getOptionalParameter("Description");
 
@@ -61,7 +61,7 @@ class CLITest {
     void canDisplayMessage(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = ByteArrayInputStream.nullInputStream();
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         String message = "This is a test message";
         cli.displayMessage(message);
@@ -74,7 +74,7 @@ class CLITest {
     void canDisplayMultipleMessages(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = ByteArrayInputStream.nullInputStream();
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         String firstMessage = "This is a test message";
         String secondMessage = "This is another test message";
@@ -90,7 +90,7 @@ class CLITest {
     void canDisplayTable(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = createInputStreamForInput("Test");
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         LinkedHashMap<String, String> table = new LinkedHashMap<>();
         table.put("Key1", "Value1");
@@ -117,7 +117,7 @@ class CLITest {
             }
         };
 
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
 
         assertThrows(FailedWriteException.class, () -> cli.getOptionalParameter("Title"));
     }
@@ -134,7 +134,7 @@ class CLITest {
         InputStream in = InputStream.nullInputStream();
         OutputStream out = new ByteArrayOutputStream();
 
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
         cli.displayMenuActions(menuActions);
 
         String output = out.toString();
@@ -154,7 +154,7 @@ class CLITest {
         InputStream in = createInputStreamForInput("a");
         OutputStream out = new ByteArrayOutputStream();
 
-        CLI cli = new CLI(in, out);
+        IO cli = new IO(in, out);
         char inputKey = cli.promptNavigationKeyEntry();
 
         String output = out.toString();

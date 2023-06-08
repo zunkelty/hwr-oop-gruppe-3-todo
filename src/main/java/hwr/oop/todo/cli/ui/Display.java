@@ -1,6 +1,6 @@
-package hwr.oop.todo.ui;
+package hwr.oop.todo.cli.ui;
 
-import hwr.oop.todo.ui.menu.MenuAction;
+import hwr.oop.todo.cli.ui.menu.MenuAction;
 
 import java.io.IOException;
 import java.util.List;

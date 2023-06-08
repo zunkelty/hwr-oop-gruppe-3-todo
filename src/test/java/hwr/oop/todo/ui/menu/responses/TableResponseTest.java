@@ -1,5 +1,6 @@
 package hwr.oop.todo.ui.menu.responses;
 
+import hwr.oop.todo.cli.ui.menu.responses.TableResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;

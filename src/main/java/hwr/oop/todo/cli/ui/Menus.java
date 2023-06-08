@@ -1,15 +1,15 @@
-package hwr.oop.todo.ui;
+package hwr.oop.todo.cli.ui;
 
+import hwr.oop.todo.application.usecases.UseCases;
+import hwr.oop.todo.cli.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.responses.StringResponse;
+import hwr.oop.todo.cli.ui.menu.responses.TableResponse;
 import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.library.project.ProjectFactory;
 import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
-import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.ui.menu.Menu;
-import hwr.oop.todo.ui.menu.responses.TableResponse;
-import hwr.oop.todo.ui.menu.responses.StringResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,23 +45,24 @@ public class Menus {
     public static final Menu HOME = new Menu()
             .on('a', "Tasks anzeigen/bearbeiten").navigateTo(() -> Menus.TASK)
             .on('b', "Projekte anzeigen/bearbeiten").navigateTo(() -> Menus.PROJECT)
-            .on('c', "Tags anzeigen/bearbeiten").navigateTo(() -> Menus.TAG);
+            .on('c', "Tags anzeigen/bearbeiten").navigateTo(() -> Menus.TAG)
+            .on('q', "Beenden").quit();
 
-    private static StringResponse createTask(ToDoList toDoList, ParameterProvider parameters) {
+    private static StringResponse createTask(UseCases useCases, ParameterProvider parameters) {
         String title = parameters.getRequiredParameter(TITLE);
         Optional<String> description = parameters.getOptionalParameter(DESC);
 
         Task task = description.map(desc -> TaskFactory.createTask(title, desc)).orElseGet(() -> TaskFactory.createTask(title));
-        toDoList.addTask(task);
+        useCases.getCreateTaskUseCase().insertTask(task);
 
         return StringResponse.with("Aufgabe wurde angelegt (ID: " + task.getId() + ")");
     }
 
-    private static TableResponse getTask(ToDoList toDoList, ParameterProvider parameters) {
+    private static TableResponse getTask(UseCases useCases, ParameterProvider parameters) {
         String sId = parameters.getRequiredParameter("ID");
         UUID id = UUID.fromString(sId);
 
-        Task task = toDoList.getTask(id);
+        Task task = useCases.getTaskUseCase().getTaskById(id);
 
         return new TableResponse()
                 .withRow("ID", task.getId().toString())
@@ -70,20 +71,20 @@ public class Menus {
                 .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
     }
 
-    private static StringResponse createProject(ToDoList toDoList, ParameterProvider parameters){
+    private static StringResponse createProject(UseCases useCases, ParameterProvider parameters){
         String name = parameters.getRequiredParameter("Name");
 
         Project project = ProjectFactory.createProject(name);
-        toDoList.createProject(project);
+        useCases.getCreateProjectUseCase().createProject(project);
 
         return StringResponse.with("Projekt wurde angelegt (ID: " + project.getId() + ")");
     }
 
-    private static TableResponse getProject(ToDoList toDoList, ParameterProvider parameters) {
+    private static TableResponse getProject(UseCases useCases, ParameterProvider parameters) {
         String sId = parameters.getRequiredParameter("ID");
         UUID id = UUID.fromString(sId);
 
-        Project project = toDoList.getProject(id);
+        Project project = useCases.getProjectUseCase().getProjectById(id);
 
         return new TableResponse()
                 .withRow("ID", project.getId().toString())
@@ -91,31 +92,26 @@ public class Menus {
                 .withRow("Zugeordnete Aufgaben", String.valueOf(project.getTasks().size()));
     }
 
-    private static StringResponse addTaskToProject(ToDoList toDoList, ParameterProvider parameterProvider){
+    private static StringResponse addTaskToProject(UseCases useCases, ParameterProvider parameterProvider){
         String sProjectId = parameterProvider.getRequiredParameter("Projekt ID");
         String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
 
         UUID projectId = UUID.fromString(sProjectId);
         UUID taskId = UUID.fromString(sTaskId);
 
-        Project project = toDoList.getProject(projectId);
-        Task task = toDoList.getTask(taskId);
-
-        project.addTask(task);
+        useCases.getAddTaskToProjectUseCase().addTaskToProject(projectId, taskId);
 
         return StringResponse.with("Aufgabe wurde zum Projekt hinzugefügt");
     }
 
-    private static TableResponse getTasksOfProject(ToDoList toDoList, ParameterProvider parameterProvider){
+    private static TableResponse getTasksOfProject(UseCases useCases, ParameterProvider parameterProvider){
         String sProjectId = parameterProvider.getRequiredParameter("Projekt ID");
 
         UUID projectId = UUID.fromString(sProjectId);
 
-        Project project = toDoList.getProject(projectId);
-        List<Task> tasks = project.getTasks();
+        List<Task> tasks = useCases.getTasksFromProjectUseCase().getTasksOfProject(projectId);
 
         TableResponse response = new TableResponse();
-        response.withRow("Projekt", project.getName());
 
         for (Task task : tasks) {
             response.withRow("ID", task.getId().toString())
@@ -128,21 +124,21 @@ public class Menus {
         return response;
     }
 
-    private static StringResponse createTag(ToDoList toDoList, ParameterProvider parameters){
+    private static StringResponse createTag(UseCases useCases, ParameterProvider parameters){
         String name = parameters.getRequiredParameter("Name");
         String description = parameters.getOptionalParameter(DESC).orElse("");
 
         Tag tag = TagFactory.createTag(name, description);
-        toDoList.createTag(tag);
+        useCases.getCreateTagUseCase().insertTag(tag);
 
         return StringResponse.with("Tag wurde angelegt (ID: " + tag.getId() + ")");
     }
 
-    private static TableResponse getTag(ToDoList toDoList, ParameterProvider parameters) {
+    private static TableResponse getTag(UseCases useCases, ParameterProvider parameters) {
         String sId = parameters.getRequiredParameter("ID");
         UUID id = UUID.fromString(sId);
 
-        Tag tag = toDoList.getTag(id);
+        Tag tag = useCases.getTagUseCase().getTagById(id);
 
         return new TableResponse()
                 .withRow("ID", tag.getId().toString())
@@ -150,17 +146,14 @@ public class Menus {
                 .withRow(DESC, tag.getDescription());
     }
 
-    private static StringResponse addTagToTask(ToDoList toDoList, ParameterProvider parameterProvider){
+    private static StringResponse addTagToTask(UseCases useCases, ParameterProvider parameterProvider){
         String sTagId = parameterProvider.getRequiredParameter("Tag ID");
         String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
 
         UUID tagId = UUID.fromString(sTagId);
         UUID taskId = UUID.fromString(sTaskId);
 
-        Tag tag = toDoList.getTag(tagId);
-        Task task = toDoList.getTask(taskId);
-
-        task.addTag(tag);
+        useCases.getAddTagToTaskUseCase().addTagToTask(taskId, tagId);
 
         return StringResponse.with("Tag wurde zur Aufgabe hinzugefügt");
     }

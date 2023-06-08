@@ -1,12 +1,13 @@
-package hwr.oop.todo.ui.menu.responses;
+package hwr.oop.todo.cli.ui.menu.responses;
 
-import hwr.oop.todo.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.Menu;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public interface MenuResponse {
     boolean isSuccess();
+    boolean shouldQuit();
 
     Optional<String> message();
 

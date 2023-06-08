@@ -1,8 +1,8 @@
-package hwr.oop.todo.ui.menu.responses;
+package hwr.oop.todo.cli.ui.menu.responses;
 
-import hwr.oop.todo.ui.menu.Menu;
-import hwr.oop.todo.ui.menu.MenuActionHandlerFunction;
-import hwr.oop.todo.ui.menu.NavigateToMenuFunction;
+import hwr.oop.todo.cli.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.MenuActionHandlerFunction;
+import hwr.oop.todo.cli.ui.menu.NavigateToMenuFunction;
 
 public class MenuResponseInContext {
 
@@ -22,6 +22,11 @@ public class MenuResponseInContext {
 
     public Menu navigateTo(NavigateToMenuFunction nextMenu){
         registerHandler((toDoList, parameters) -> NavigationResponse.to(nextMenu.get()));
+        return menu;
+    }
+
+    public Menu quit(){
+        registerHandler((toDoList, parameters) -> new QuitResponse());
         return menu;
     }
 

@@ -1,26 +1,23 @@
-package hwr.oop.todo.io;
+package hwr.oop.todo.cli;
 
-import hwr.oop.todo.ui.Display;
-import hwr.oop.todo.ui.NavigationInput;
-import hwr.oop.todo.ui.menu.FailedWriteException;
-import hwr.oop.todo.ui.menu.MenuAction;
-import hwr.oop.todo.ui.ParameterProvider;
+import hwr.oop.todo.cli.ui.Display;
+import hwr.oop.todo.cli.ui.NavigationInput;
+import hwr.oop.todo.cli.ui.menu.FailedWriteException;
+import hwr.oop.todo.cli.ui.menu.MenuAction;
+import hwr.oop.todo.cli.ui.ParameterProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-
-
-
-public class CLI implements ParameterProvider, NavigationInput, Display {
+public class IO implements ParameterProvider, NavigationInput, Display {
     private static final int TABLE_VERTICAL_PADDING = 1;
 
     Scanner in;
     OutputStream out;
 
-    public CLI(InputStream in, OutputStream out){
+    public IO(InputStream in, OutputStream out){
         this.in = new Scanner(in);
         this.out = out;
     }
@@ -108,9 +105,8 @@ public class CLI implements ParameterProvider, NavigationInput, Display {
     public char promptNavigationKeyEntry() {
         writeLine("Press a key to continue");
 
-        Scanner scanner = new Scanner(System.in);
 
-        String input = scanner.nextLine();
+        String input = readLine();
 
         if (input.trim().length() == 0) {
             return promptNavigationKeyEntry();

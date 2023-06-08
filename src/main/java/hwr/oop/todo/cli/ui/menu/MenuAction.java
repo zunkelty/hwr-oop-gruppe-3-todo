@@ -1,8 +1,8 @@
-package hwr.oop.todo.ui.menu;
+package hwr.oop.todo.cli.ui.menu;
 
-import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.ui.ParameterProvider;
-import hwr.oop.todo.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.application.usecases.UseCases;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.cli.ui.ParameterProvider;
 
 public class MenuAction {
 
@@ -24,8 +24,8 @@ public class MenuAction {
         return description;
     }
 
-    public MenuResponse run(ToDoList toDoList, ParameterProvider parameterProvider) {
-        return handler.run(toDoList, parameterProvider);
+    public MenuResponse run(UseCases useCases, ParameterProvider parameterProvider) {
+        return handler.run(useCases, parameterProvider);
     }
 
 }

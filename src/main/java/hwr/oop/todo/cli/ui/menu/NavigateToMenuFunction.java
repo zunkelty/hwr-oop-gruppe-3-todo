@@ -1,4 +1,4 @@
-package hwr.oop.todo.ui.menu;
+package hwr.oop.todo.cli.ui.menu;
 
 public interface NavigateToMenuFunction {
     Menu get();
