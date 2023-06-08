@@ -1,10 +1,6 @@
 package hwr.oop.todo.persistence;
 
-import hwr.oop.todo.library.project.Project;
-import hwr.oop.todo.library.tag.Tag;
-
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +17,7 @@ public class FileAdapter {
             br.write(data);
             br.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FailedFileWriteException();
         }
     }
 
@@ -34,7 +30,7 @@ public class FileAdapter {
                 strings.add(line);
             }
         } catch (IOException e) {
-            System.err.format("IOException: %s%n", e);
+            throw new FailedFileReadException();
         }
         return strings;
     }
