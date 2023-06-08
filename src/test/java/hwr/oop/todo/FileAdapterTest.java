@@ -13,6 +13,6 @@ class FileAdapterTest {
     void canSaveToFile() {
         FileAdapter fileAdapter = new FileAdapter();
         File file = new File("save.csv");
-        fileAdapter.save(new Project(UUID.randomUUID(), "Test").toCSV(), file);
+        fileAdapter.save("test", file);
     }
 }
