@@ -4,23 +4,24 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 public class AppConfig {
-    private static Properties properties;
-    private static String filePath = "src/AppConfig.properties";
-    public AppConfig(String filePath) {
-        this.filePath = filePath;
+    private static final Properties properties = new Properties();
+    private static boolean isInitialized = false;
+
+    private AppConfig(){
+        throw new IllegalStateException("Utility class");
     }
 
-    public static void loadProperties() {
-        properties = new Properties();
-        try(FileInputStream fileInputStream = new FileInputStream(filePath)) {
+    private static void loadProperties() {
+        try(FileInputStream fileInputStream = new FileInputStream("AppConfig.properties")){
             properties.load(fileInputStream);
+            isInitialized = true;
         } catch (Exception e) {
-            throw new RuntimeException("Could not load properties file");
+            throw new FailedLoadPropertiesException(e);
         }
     }
 
     public static String getProperty(String key) {
-        if (properties == null) {
+        if (!isInitialized) {
             loadProperties();
         }
         return properties.getProperty(key);

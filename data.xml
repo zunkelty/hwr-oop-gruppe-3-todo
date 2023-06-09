@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <Tasks id='1' title='Water plants' description='Only plants on balcony' state='OPEN' />
+    <Tasks id='2' title='Buy groceries' description='Buy groceries for the week' state='OPEN'/>
+    <Tasks id='3' title='Clean room' description='Clean room and throw away trash' state='OPEN'/>
+    <Tasks id='4' title='Sort old clothes' description='Sort old clothes and donate them' state='OPEN'/>
+    <Tags id='1' name='Home' description='Tasks to do at home'/>
+    <Projects id='1' name='Become more organized'/>
+    <Projects_Tasks task_id='3' project_id='1'/>
+    <Projects_Tasks task_id='4' project_id='1'/>
+    <Tags_Tasks task_id='1' tag_id='1'/>
+    <Tags_Tasks task_id='3' tag_id='1'/>
+    <Tags_Tasks task_id='4' tag_id='1'/>
+</dataset>

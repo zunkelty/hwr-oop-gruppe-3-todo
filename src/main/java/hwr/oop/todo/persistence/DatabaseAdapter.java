@@ -1,6 +1,5 @@
 package hwr.oop.todo.persistence;
 
-import hwr.oop.todo.application.AppConfig;
 import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.library.project.ProjectFactory;
 import hwr.oop.todo.library.tag.Tag;
@@ -18,25 +17,17 @@ public class DatabaseAdapter implements Persistence {
 
     private final Connection connection;
 
-    public DatabaseAdapter() {
-
+    public DatabaseAdapter(String connectionUrl) {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            String password = AppConfig.getProperty("db.password");
-            String user = AppConfig.getProperty("db.username");
-            String url = AppConfig.getProperty("db.url");
-            connection = DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(connectionUrl);
         } catch (SQLException e) {
-            throw new FailedDatabaseConnectionException();
+            throw new FailedDatabaseConnectionException(e);
         }
     }
 
-    //Task methods
-    //TODO: also add tags
+    public DatabaseAdapter(Connection connection){
+        this.connection = connection;
+    }
 
     public Task getTask(UUID id) {
         try {
@@ -54,7 +45,7 @@ public class DatabaseAdapter implements Persistence {
             statement.close();
             return task;
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
     public void updateTask(Task task) {
@@ -64,7 +55,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -75,7 +66,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -86,12 +77,9 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
-
-    //Project methods
-    // TODO: implement project tags list
 
     public Project getProject(UUID id) {
         try {
@@ -107,7 +95,7 @@ public class DatabaseAdapter implements Persistence {
             statement.close();
             return project;
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -118,7 +106,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -129,7 +117,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -140,7 +128,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -161,7 +149,7 @@ public class DatabaseAdapter implements Persistence {
             statement.close();
             return tag;
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -172,7 +160,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -183,7 +171,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 
@@ -194,7 +182,7 @@ public class DatabaseAdapter implements Persistence {
             statement.execute(sql);
             statement.close();
         } catch (SQLException e) {
-            throw new FailedDatabaseStatementException();
+            throw new FailedDatabaseStatementException(e);
         }
     }
 

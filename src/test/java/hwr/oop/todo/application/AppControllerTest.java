@@ -1,6 +1,5 @@
-package hwr.oop.todo;
+package hwr.oop.todo.application;
 
-import hwr.oop.todo.application.AppController;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
