@@ -10,14 +10,6 @@ import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
-<<<<<<< HEAD:src/main/java/hwr/oop/todo/cli/ui/Menus.java
-=======
-import hwr.oop.todo.library.todolist.ToDoList;
-import hwr.oop.todo.ui.menu.Menu;
-import hwr.oop.todo.ui.menu.responses.MenuResponse;
-import hwr.oop.todo.ui.menu.responses.TableResponse;
-import hwr.oop.todo.ui.menu.responses.StringResponse;
->>>>>>> origin/In_Tray-Liste:src/main/java/hwr/oop/todo/ui/Menus.java
 
 import java.util.List;
 import java.util.Optional;
@@ -50,22 +42,11 @@ public class Menus {
             .on('b', "Tag anzeigen (mit ID)").execute(Menus::getTag)
             .on('z', BACK).navigateTo(() -> Menus.HOME);
 
-    public static final Menu INTRAY = new Menu()
-            .on('a', "Aufgabe anlegen").execute(Menus::createInTrayTask)
-            .on('b', "Aufgabe anzeigen (mit ID)").execute(Menus::getInTrayTask)
-            .on('c', "Aufgabe löschen").execute(Menus::deleteInTrayTask)
-            .on('d', "Aufgabe in die To-Do-Liste verschieben").execute(Menus::moveInTrayTask)
-            .on('z', BACK).navigateTo(() -> Menus.HOME);
-
     public static final Menu HOME = new Menu()
             .on('a', "Tasks anzeigen/bearbeiten").navigateTo(() -> Menus.TASK)
             .on('b', "Projekte anzeigen/bearbeiten").navigateTo(() -> Menus.PROJECT)
             .on('c', "Tags anzeigen/bearbeiten").navigateTo(() -> Menus.TAG)
-<<<<<<< HEAD:src/main/java/hwr/oop/todo/cli/ui/Menus.java
             .on('q', "Beenden").quit();
-=======
-            .on('d', "Eingangsliste").navigateTo(() -> Menus.INTRAY);
->>>>>>> origin/In_Tray-Liste:src/main/java/hwr/oop/todo/ui/Menus.java
 
     private static StringResponse createTask(UseCases useCases, ParameterProvider parameters) {
         String title = parameters.getRequiredParameter(TITLE);
@@ -90,59 +71,7 @@ public class Menus {
                 .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
     }
 
-<<<<<<< HEAD:src/main/java/hwr/oop/todo/cli/ui/Menus.java
     private static StringResponse createProject(UseCases useCases, ParameterProvider parameters){
-=======
-    private static StringResponse createInTrayTask(ToDoList toDoList, ParameterProvider parameters) {
-        String title = parameters.getRequiredParameter(TITLE);
-        Optional<String> description = parameters.getOptionalParameter(DESC);
-
-        Task task = description.map(desc -> TaskFactory.createTask(title, desc)).orElseGet(() -> TaskFactory.createTask(title));
-        toDoList.addInTrayTask(task);
-
-        return StringResponse.with("Aufgabe wurde angelegt (ID: " + task.getId() + ")");
-    }
-
-    private static TableResponse getInTrayTask(ToDoList toDoList, ParameterProvider parameters) {
-        String sId = parameters.getRequiredParameter("ID");
-        UUID id = UUID.fromString(sId);
-
-        Task task = toDoList.getInTrayTask(id);
-
-        return new TableResponse()
-                .withRow("ID", task.getId().toString())
-                .withRow(TITLE, task.getTitle())
-                .withRow(DESC, task.getDescription())
-                .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
-    }
-
-    private static StringResponse deleteInTrayTask(ToDoList toDoList, ParameterProvider parameters) {
-        String sId = parameters.getRequiredParameter("ID");
-        UUID id = UUID.fromString(sId);
-
-        Task task = toDoList.getInTrayTask(id);
-
-        toDoList.deleteInTrayTask(id);
-
-        return StringResponse.with("Aufgabe " + task.getTitle() + " wurde entfernt");
-    }
-
-    private static MenuResponse moveInTrayTask(ToDoList toDoList, ParameterProvider parameterProvider) {
-        String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
-
-        UUID taskId = UUID.fromString(sTaskId);
-
-        Task task = toDoList.getInTrayTask(taskId);
-        toDoList.deleteInTrayTask(taskId);
-
-        toDoList.addTask(task);
-
-        return StringResponse.with("Aufgabe wurde in die To-Do-Liste verschoben (ID: " + task.getId() + ")");
-    }
-
-
-    private static StringResponse createProject(ToDoList toDoList, ParameterProvider parameters){
->>>>>>> origin/In_Tray-Liste:src/main/java/hwr/oop/todo/ui/Menus.java
         String name = parameters.getRequiredParameter("Name");
 
         Project project = ProjectFactory.createProject(name);

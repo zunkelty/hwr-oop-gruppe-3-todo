@@ -11,7 +11,6 @@ public class ToDoList {
     private final HashMap<UUID, Task> tasks = new HashMap<>();
     private final HashMap<UUID, Project> projects = new HashMap<>();
     private final HashMap<UUID, Tag> tags = new HashMap<>();
-    private final HashMap<UUID, Task> inTray = new HashMap<>();
 
     public void addTask(Task task){
         UUID id = task.getId();
@@ -22,22 +21,6 @@ public class ToDoList {
     public Task getTask(UUID id){
         if(!tasks.containsKey(id)) throw NotFoundException.withItemName("Task");
         return tasks.get(id);
-    }
-
-    public void addInTrayTask(Task task){
-        UUID id = task.getId();
-        if(inTray.containsKey(id)) throw new DuplicateIdException(id);
-        inTray.put(id, task);
-    }
-
-    public Task getInTrayTask(UUID id){
-        if(!inTray.containsKey(id)) throw new NotFoundException();
-        return inTray.get(id);
-    }
-
-    public void deleteInTrayTask(UUID id){
-        if(!inTray.containsKey(id)) throw new NotFoundException();
-        inTray.remove(id);
     }
 
     public void createProject(Project project){
@@ -61,7 +44,5 @@ public class ToDoList {
         if(tags.containsKey(id)) throw new DuplicateIdException(id);
         tags.put(id, tag);
     }
-
-
 
 }
