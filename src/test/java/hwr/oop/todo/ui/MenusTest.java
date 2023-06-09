@@ -6,6 +6,7 @@ import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
+import hwr.oop.todo.library.todolist.NotFoundException;
 import hwr.oop.todo.library.todolist.ToDoList;
 import hwr.oop.todo.ui.menu.Menu;
 import hwr.oop.todo.ui.menu.MenuAction;
@@ -39,7 +40,7 @@ class MenusTest {
         }
     }
 
-    private final List<Menu> requiredSubmenus = Arrays.asList(Menus.TAG, Menus.TASK, Menus.PROJECT);
+    private final List<Menu> requiredSubmenus = Arrays.asList(Menus.TAG, Menus.TASK, Menus.PROJECT, Menus.INTRAY );
 
     @Test
     void AllSubmenusAreReachableFromHome() {
@@ -112,6 +113,77 @@ class MenusTest {
         expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
     }
 
+    @Test
+    void CanCreateInTrayTask() {
+        ToDoList toDoList = new ToDoList();
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test InTrayTask");
+
+        MenuResponse response = Menus.INTRAY.handle('a', toDoList, parameterProvider);
+
+        assertTrue(response.isSuccess());
+    }
+
+    @Test
+    void CanGetInTrayTask() {
+        ToDoList toDoList = new ToDoList();
+
+        Task task = TaskFactory.createTask("Test InTrayTask");
+        toDoList.addInTrayTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.INTRAY.handle('b', toDoList, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
+                "Titel", "Test InTrayTask",
+                "ID", task.getId().toString(),
+                "Beschreibung", "",
+                "Tags", ""
+        ));
+
+        assertTrue(response.table().isPresent());
+        LinkedHashMap<String, String> responseTable = response.table().get();
+
+        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
+    }
+    @Test
+    void CanDeleteInTrayTask(){
+        ToDoList toDoList = new ToDoList();
+
+        Task task = TaskFactory.createTask("Test InTrayTask");
+        toDoList.addInTrayTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.INTRAY.handle('c', toDoList, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        assertThrows(NotFoundException.class, () -> toDoList.getInTrayTask(task.getId()));
+
+
+    }
+
+    @Test
+    void CanMoveInTrayTask(){
+        ToDoList toDoList = new ToDoList();
+
+        Task task = TaskFactory.createTask("Test InTrayTask");
+        toDoList.addInTrayTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.INTRAY.handle('d', toDoList, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        assertThrows(NotFoundException.class, () -> toDoList.getInTrayTask(task.getId()));
+        assertEquals(task, toDoList.getTask(task.getId()));
+
+
+    }
     @Test
     void CanCreateTag(){
         ToDoList toDoList = new ToDoList();
