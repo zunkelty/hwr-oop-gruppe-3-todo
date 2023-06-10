@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 public class AppController {
     public static void main(String[] args){
         String dbUrl = AppConfig.getProperty("db.url");
+        System.out.println(dbUrl);
 
         if(dbUrl == null) throw new NoSuchElementException("Could not load properties file");
 

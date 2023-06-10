@@ -6,6 +6,10 @@ import hwr.oop.todo.persistence.Persistence;
 public class UseCases {
     CreateTaskUseCase createTaskUseCase;
     GetTaskUseCase getTaskUseCase;
+
+    CreateInTrayTaskUseCase createInTrayTaskUseCase;
+    GetInTrayTaskUseCase getInTrayTaskUseCase;
+    DeleteInTrayTaskUseCase deleteInTrayTaskUseCase;
     CreateProjectUseCase createProjectUseCase;
     GetProjectUseCase getProjectUseCase;
     AddTaskToProjectUseCase addTaskToProjectUseCase;
@@ -21,6 +25,9 @@ public class UseCases {
 
         CreateTaskUseCase createTaskUseCase = new CreateTaskUseCase(toDoList, persistence);
         GetTaskUseCase getTaskUseCase = new GetTaskUseCase(toDoList);
+        CreateInTrayTaskUseCase createInTrayTaskUseCase = new CreateInTrayTaskUseCase(toDoList);
+        GetInTrayTaskUseCase getInTrayTaskUseCase = new GetInTrayTaskUseCase (toDoList);
+        DeleteInTrayTaskUseCase deleteInTrayTaskUseCase = new DeleteInTrayTaskUseCase(toDoList);
         CreateProjectUseCase createProjectUseCase = new CreateProjectUseCase(toDoList, persistence);
         GetProjectUseCase getProjectUseCase = new GetProjectUseCase(toDoList);
         AddTaskToProjectUseCase addTaskToProjectUseCase = new AddTaskToProjectUseCase(toDoList, persistence);
@@ -30,12 +37,15 @@ public class UseCases {
         AddTagToTaskUseCase addTagToTaskUseCase = new AddTagToTaskUseCase(toDoList, persistence);
         GetOpenTasksUseCase getOpenTasksUseCase = new GetOpenTasksUseCase(toDoList);
 
-        return new UseCases(createTaskUseCase, getTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase, getOpenTasksUseCase);
+        return new UseCases(createTaskUseCase, getTaskUseCase, createInTrayTaskUseCase, getInTrayTaskUseCase, deleteInTrayTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase, getOpenTasksUseCase);
     }
 
-    public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase, GetOpenTasksUseCase getOpenTasksUseCase){
+    public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase,CreateInTrayTaskUseCase createInTrayTaskUseCase, GetInTrayTaskUseCase getInTrayTaskUseCase, DeleteInTrayTaskUseCase deleteInTrayTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase, GetOpenTasksUseCase getOpenTasksUseCase){
         this.createTaskUseCase = createTaskUseCase;
         this.getTaskUseCase = getTaskUseCase;
+        this.createInTrayTaskUseCase = createInTrayTaskUseCase;
+        this.deleteInTrayTaskUseCase = deleteInTrayTaskUseCase;
+        this.getInTrayTaskUseCase = getInTrayTaskUseCase;
         this.createProjectUseCase = createProjectUseCase;
         this.getProjectUseCase = getProjectUseCase;
         this.addTaskToProjectUseCase = addTaskToProjectUseCase;
@@ -54,6 +64,17 @@ public class UseCases {
         return getTaskUseCase;
     }
 
+    public CreateInTrayTaskUseCase getCreateInTrayTaskUseCase() {
+        return createInTrayTaskUseCase;
+    }
+
+    public GetInTrayTaskUseCase getInTrayTaskUseCase(){
+        return getInTrayTaskUseCase;
+    }
+
+    public DeleteInTrayTaskUseCase deleteInTrayTaskUseCase(){
+        return deleteInTrayTaskUseCase;
+    }
     public CreateProjectUseCase getCreateProjectUseCase() {
         return createProjectUseCase;
     }

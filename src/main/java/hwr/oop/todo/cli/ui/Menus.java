@@ -44,10 +44,18 @@ public class Menus {
             .on('b', "Tag anzeigen (mit ID)").execute(Menus::getTag)
             .on('z', BACK).navigateTo(() -> Menus.HOME);
 
+    public static final Menu INTRAY = new Menu()
+            .on('a', "Aufgabe anlegen").execute(Menus::createInTrayTask)
+            .on('b', "Aufgabe anzeigen (mit ID)").execute(Menus::getInTrayTask)
+            .on('c', "Aufgabe löschen").execute(Menus::deleteInTrayTask)
+            .on('d', "Aufgabe in die To-Do-Liste verschieben").execute(Menus::moveInTrayTask)
+            .on('z', BACK).navigateTo(() -> Menus.HOME);
+
     public static final Menu HOME = new Menu()
             .on('a', "Tasks anzeigen/bearbeiten").navigateTo(() -> Menus.TASK)
             .on('b', "Projekte anzeigen/bearbeiten").navigateTo(() -> Menus.PROJECT)
             .on('c', "Tags anzeigen/bearbeiten").navigateTo(() -> Menus.TAG)
+            .on('d', "Eingangsliste").navigateTo(() -> Menus.INTRAY)
             .on('q', "Beenden").quit();
 
     private static String taskStateToString(TaskState taskState){
@@ -95,6 +103,54 @@ public class Menus {
         }
 
         return response;
+    }
+
+    private static StringResponse createInTrayTask(UseCases useCases, ParameterProvider parameters) {
+        String title = parameters.getRequiredParameter(TITLE);
+        Optional<String> description = parameters.getOptionalParameter(DESC);
+
+        Task task = description.map(desc -> TaskFactory.createTask(title, desc)).orElseGet(() -> TaskFactory.createTask(title));
+        useCases.getCreateInTrayTaskUseCase().insertInTrayTask(task);
+
+        return StringResponse.with("Aufgabe wurde angelegt (ID: " + task.getId() + ")");
+    }
+
+    private static TableResponse getInTrayTask(UseCases useCases, ParameterProvider parameters) {
+        String sId = parameters.getRequiredParameter("ID");
+        UUID id = UUID.fromString(sId);
+
+        Task task = useCases.getInTrayTaskUseCase().getInTrayTaskById(id);
+
+        return new TableResponse()
+                .withRow("ID", task.getId().toString())
+                .withRow(TITLE, task.getTitle())
+                .withRow(DESC, task.getDescription())
+                .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
+    }
+
+    private static StringResponse deleteInTrayTask(UseCases useCases, ParameterProvider parameters) {
+        String sId = parameters.getRequiredParameter("ID");
+        UUID id = UUID.fromString(sId);
+
+        Task task = useCases.getInTrayTaskUseCase().getInTrayTaskById(id);
+
+        useCases.deleteInTrayTaskUseCase().deleteInTrayTask(id);
+
+        return StringResponse.with("Aufgabe " + task.getTitle() + " wurde entfernt");
+    }
+
+    private static StringResponse moveInTrayTask(UseCases useCases, ParameterProvider parameterProvider) {
+        String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
+
+        UUID taskId = UUID.fromString(sTaskId);
+
+        Task task = useCases.getInTrayTaskUseCase().getInTrayTaskById(taskId);
+
+        useCases.deleteInTrayTaskUseCase().deleteInTrayTask(taskId);
+
+        useCases.getCreateTaskUseCase().insertTask(task);
+
+        return StringResponse.with("Aufgabe wurde in die To-Do-Liste verschoben (ID: " + task.getId() + ")");
     }
 
     private static StringResponse createProject(UseCases useCases, ParameterProvider parameters){
