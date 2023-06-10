@@ -26,7 +26,7 @@ class ToDoListTest {
     @Test
     void canAddTask() {
         Task task = TaskFactory.createTask("Example Task");
-        toDoList.addTask(task);
+        toDoList.createTask(task);
 
         Task retrievedTask = toDoList.getTask(task.getId());
         assertNotNull(retrievedTask);
@@ -37,10 +37,10 @@ class ToDoListTest {
     @Test
     void addingTaskWithDuplicateIdThrowsException() {
         Task task = TaskFactory.createTask("Example Task");
-        toDoList.addTask(task);
+        toDoList.createTask(task);
 
         // Adding a task with the same ID should throw DuplicateIdException
-        assertThrows(DuplicateIdException.class, () -> toDoList.addTask(task));
+        assertThrows(DuplicateIdException.class, () -> toDoList.createTask(task));
     }
 
     @Test

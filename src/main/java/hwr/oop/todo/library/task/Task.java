@@ -15,14 +15,18 @@ public class Task {
 
     private final UUID id;
 
-    Task(UUID id, String title, String description){
+    public Task(UUID id, String title, String description, TaskState state){
+        this.state = state;
         this.id = id;
         this.title = title;
         this.description = description;
-        this.state = TaskState.OPEN;
     }
 
-    Task(UUID id, String title) {
+    public Task(UUID id, String title, String description){
+        this(id, title, description, TaskState.OPEN);
+    }
+
+    public Task(UUID id, String title) {
         this(id, title, "");
     }
 

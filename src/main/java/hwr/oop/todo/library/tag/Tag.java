@@ -8,13 +8,13 @@ public class Tag {
     private String name;
     private String description;
 
-    Tag(UUID id, String name, String description){
+    public Tag(UUID id, String name, String description){
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    Tag(UUID id, String name){
+    public Tag(UUID id, String name){
         this(id, name, "");
     }
 

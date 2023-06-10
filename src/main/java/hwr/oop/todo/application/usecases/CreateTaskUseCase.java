@@ -15,7 +15,7 @@ public class CreateTaskUseCase {
     }
 
     public void insertTask(Task task) {
-        toDoList.addTask(task);
+        toDoList.createTask(task);
         insertTaskPort.insertTask(task);
     }
 }

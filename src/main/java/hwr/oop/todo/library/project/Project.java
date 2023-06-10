@@ -12,7 +12,7 @@ public class Project {
     private String name;
     private final List<Task> tasks = new ArrayList<>();
 
-    Project(UUID id, String name){
+    public Project(UUID id, String name){
         this.name = name;
         this.id = id;
     }

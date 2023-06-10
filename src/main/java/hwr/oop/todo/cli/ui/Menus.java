@@ -10,6 +10,7 @@ import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
+import hwr.oop.todo.library.task.TaskState;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class Menus {
             .on('a', "Aufgabe anlegen").execute(Menus::createTask)
             .on('b', "Aufgabe anzeigen (mit ID)").execute(Menus::getTask)
             .on('c', "Tag zu Aufgabe hinzufügen").execute(Menus::addTagToTask)
+            .on('d', "Alle offenen Aufgaben anzeigen").execute(Menus::showOpenTasks)
             .on('z', BACK).navigateTo(() -> Menus.HOME);
 
     public static final Menu PROJECT = new Menu()
@@ -47,6 +49,13 @@ public class Menus {
             .on('b', "Projekte anzeigen/bearbeiten").navigateTo(() -> Menus.PROJECT)
             .on('c', "Tags anzeigen/bearbeiten").navigateTo(() -> Menus.TAG)
             .on('q', "Beenden").quit();
+
+    private static String taskStateToString(TaskState taskState){
+        if(taskState == TaskState.OPEN) return "Nicht begonnen";
+        if(taskState == TaskState.IN_PROGRESS) return "In Bearbeitung";
+        if(taskState == TaskState.DONE) return "Erledigt";
+        return "Unbekannt";
+    }
 
     private static StringResponse createTask(UseCases useCases, ParameterProvider parameters) {
         String title = parameters.getRequiredParameter(TITLE);
@@ -68,7 +77,24 @@ public class Menus {
                 .withRow("ID", task.getId().toString())
                 .withRow(TITLE, task.getTitle())
                 .withRow(DESC, task.getDescription())
+                .withRow("Status", taskStateToString(task.getState()))
                 .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
+    }
+
+    private static TableResponse showOpenTasks(UseCases useCases, ParameterProvider parameterProvider){
+        List<Task> openTasks = useCases.getOpenTasksUseCase().getOpenTasks();
+
+        TableResponse response = new TableResponse();
+
+        for (Task task : openTasks) {
+            response.withRow("ID", task.getId().toString())
+                    .withRow(TITLE, task.getTitle())
+                    .withRow(DESC, task.getDescription())
+                    .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")))
+                    .withRow("---", "---");
+        }
+
+        return response;
     }
 
     private static StringResponse createProject(UseCases useCases, ParameterProvider parameters){

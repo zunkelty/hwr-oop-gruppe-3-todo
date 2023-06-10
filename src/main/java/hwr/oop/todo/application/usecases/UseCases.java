@@ -13,6 +13,7 @@ public class UseCases {
     CreateTagUseCase createTagUseCase;
     GetTagUseCase getTagUseCase;
     AddTagToTaskUseCase addTagToTaskUseCase;
+    GetOpenTasksUseCase getOpenTasksUseCase;
 
 
     public static UseCases initialize(Persistence persistence) {
@@ -27,11 +28,12 @@ public class UseCases {
         CreateTagUseCase createTagUseCase = new CreateTagUseCase(toDoList, persistence);
         GetTagUseCase getTagUseCase = new GetTagUseCase(toDoList);
         AddTagToTaskUseCase addTagToTaskUseCase = new AddTagToTaskUseCase(toDoList, persistence);
+        GetOpenTasksUseCase getOpenTasksUseCase = new GetOpenTasksUseCase(toDoList);
 
-        return new UseCases(createTaskUseCase, getTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase);
+        return new UseCases(createTaskUseCase, getTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase, getOpenTasksUseCase);
     }
 
-    public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase){
+    public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase, GetOpenTasksUseCase getOpenTasksUseCase){
         this.createTaskUseCase = createTaskUseCase;
         this.getTaskUseCase = getTaskUseCase;
         this.createProjectUseCase = createProjectUseCase;
@@ -41,6 +43,7 @@ public class UseCases {
         this.createTagUseCase = createTagUseCase;
         this.getTagUseCase = getTagUseCase;
         this.addTagToTaskUseCase = addTagToTaskUseCase;
+        this.getOpenTasksUseCase = getOpenTasksUseCase;
     }
 
     public CreateTaskUseCase getCreateTaskUseCase() {
@@ -77,5 +80,9 @@ public class UseCases {
 
     public AddTagToTaskUseCase getAddTagToTaskUseCase() {
         return addTagToTaskUseCase;
+    }
+
+    public GetOpenTasksUseCase getOpenTasksUseCase() {
+        return getOpenTasksUseCase;
     }
 }

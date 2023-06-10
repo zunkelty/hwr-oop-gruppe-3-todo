@@ -8,10 +8,6 @@ public class ProjectFactory {
         return new Project(id, name);
     }
 
-    public static Project createProject(UUID id, String name){
-        return new Project(id, name);
-    }
-
     private ProjectFactory() {
     }
 }
