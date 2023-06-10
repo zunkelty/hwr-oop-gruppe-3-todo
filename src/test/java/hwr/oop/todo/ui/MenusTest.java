@@ -9,6 +9,7 @@ import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
+import hwr.oop.todo.library.todolist.NotFoundException;
 import hwr.oop.todo.library.todolist.ToDoList;
 import hwr.oop.todo.cli.ui.menu.Menu;
 import hwr.oop.todo.cli.ui.menu.MenuAction;
@@ -127,6 +128,7 @@ class MenusTest {
         MenuResponse response = Menus.TASK.handle('b', useCases, parameterProvider);
 
         assertTrue(response.isSuccess());
+        assertNotNull(task);
 
         HashMap<String, String> expectedTable = new HashMap<>(Map.of(
                 "Titel", "Test Task",
@@ -139,6 +141,77 @@ class MenusTest {
         LinkedHashMap<String, String> responseTable = response.table().get();
 
         expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
+    }
+
+    @Test
+    void CanCreateInTrayTask() {
+        UseCases useCases = UseCases.initialize(mockPersistence);
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Task");
+
+        MenuResponse response = Menus.INTRAY.handle('a', useCases, parameterProvider);
+
+        assertTrue(response.isSuccess());
+    }
+
+    @Test
+    void CanGetInTrayTask() {
+        UseCases useCases = UseCases.initialize(mockPersistence);
+        Task task = TaskFactory.createTask("Test InTrayTask");
+        useCases.getCreateInTrayTaskUseCase().insertInTrayTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.INTRAY.handle('b', useCases, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
+                "Titel", "Test InTrayTask",
+                "ID", task.getId().toString(),
+                "Beschreibung", "",
+                "Tags", ""
+        ));
+
+        assertTrue(response.table().isPresent());
+        LinkedHashMap<String, String> responseTable = response.table().get();
+
+        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
+    }
+    @Test
+    void CanDeleteInTrayTask(){
+        UseCases useCases = UseCases.initialize(mockPersistence);
+
+        Task task = TaskFactory.createTask("Test InTrayTask");
+        useCases.getCreateInTrayTaskUseCase().insertInTrayTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.INTRAY.handle('c', useCases, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        assertThrows(NotFoundException.class, () -> useCases.getInTrayTaskUseCase().getInTrayTaskById(task.getId()));
+
+
+    }
+
+    @Test
+    void CanMoveInTrayTask(){
+        UseCases useCases = UseCases.initialize(mockPersistence);
+
+        Task task = TaskFactory.createTask("Test InTrayTask");
+        useCases.getCreateInTrayTaskUseCase().insertInTrayTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.INTRAY.handle('d', useCases, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        assertThrows(NotFoundException.class, () -> useCases.getInTrayTaskUseCase().getInTrayTaskById(task.getId()));
+        assertEquals(task, useCases.getTaskUseCase().getTaskById(task.getId()));
+
+
     }
 
     @Test

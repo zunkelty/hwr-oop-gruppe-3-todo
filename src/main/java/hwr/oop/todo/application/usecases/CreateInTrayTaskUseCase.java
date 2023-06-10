@@ -12,6 +12,6 @@ public class CreateInTrayTaskUseCase {
     }
 
     public void insertInTrayTask(Task task) {
-        toDoList.addInTrayTask(task);
+        toDoList.createInTrayTask(task);
     }
 }

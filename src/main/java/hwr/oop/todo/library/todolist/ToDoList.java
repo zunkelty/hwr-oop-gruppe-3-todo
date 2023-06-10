@@ -26,7 +26,7 @@ public class ToDoList {
         return tasks.get(id);
     }
 
-    public void addInTrayTask(Task task){
+    public void createInTrayTask(Task task){
         UUID id = task.getId();
         if(inTray.containsKey(id)) throw new DuplicateIdException(id);
         inTray.put(id, task);

@@ -52,6 +52,50 @@ class ToDoListTest {
     }
 
     @Test
+    void canAddInTrayTask() {
+        Task task = TaskFactory.createTask("Example Task");
+        toDoList.createInTrayTask(task);
+
+        Task retrievedTask = toDoList.getInTrayTask(task.getId());
+        assertNotNull(retrievedTask);
+        assertEquals(task.getId(), retrievedTask.getId());
+        assertEquals(task.getTitle(), retrievedTask.getTitle());
+    }
+
+    @Test
+    void addingInTrayTaskWithDuplicateIdThrowsException() {
+        Task task = TaskFactory.createTask("Example Task");
+        toDoList.createInTrayTask(task);
+
+        // Adding a task with the same ID should throw DuplicateIdException
+        assertThrows(DuplicateIdException.class, () -> toDoList.createInTrayTask(task));
+    }
+
+    @Test
+    void gettingInTrayTaskWithInvalidIdThrowsException() {
+        UUID invalidId = UUID.randomUUID();
+
+        // Getting a task with an invalid ID should throw NotFoundException
+        assertThrows(NotFoundException.class, () -> toDoList.getInTrayTask(invalidId));
+    }
+    @Test
+    void canDeleteInTrayTask() {
+        Task task = TaskFactory.createTask("Example Task");
+        toDoList.createInTrayTask(task);
+        toDoList.deleteInTrayTask(task.getId());
+
+        assertThrows(NotFoundException.class, () -> toDoList.getInTrayTask(task.getId()));
+    }
+
+    @Test
+    void deletingInTrayTaskWithInvalidIdThrowsException() {
+        UUID invalidId = UUID.randomUUID();
+
+        // Getting a task with an invalid ID should throw NotFoundException
+        assertThrows(NotFoundException.class, () -> toDoList.deleteInTrayTask(invalidId));
+    }
+
+    @Test
     void canCreateProject() {
         Project project = ProjectFactory.createProject("Example Project");
         toDoList.createProject(project);
