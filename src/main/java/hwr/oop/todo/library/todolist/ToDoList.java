@@ -49,6 +49,6 @@ public class ToDoList {
     }
 
     public List<Task> getOpenTasks(){
-        return tasks.values().stream().filter(task -> task.getState() == TaskState.OPEN).collect(Collectors.toList());
+        return tasks.values().stream().filter(task -> task.getState() != TaskState.DONE).collect(Collectors.toList());
     }
 }
