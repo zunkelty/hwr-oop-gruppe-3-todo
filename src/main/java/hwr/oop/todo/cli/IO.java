@@ -36,7 +36,8 @@ public class IO implements ParameterProvider, NavigationInput, Display {
 
     private String readLine() {
         if (in.hasNextLine()) {
-            return in.nextLine();
+            String line = in.nextLine();
+            return line.isEmpty() ? "\n" : line;
         } else {
             throw new NoSuchElementException();
         }

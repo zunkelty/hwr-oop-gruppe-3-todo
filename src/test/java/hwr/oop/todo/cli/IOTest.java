@@ -10,8 +10,7 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IOTest {
 
@@ -33,16 +32,16 @@ class IOTest {
     }
 
     @Test
-    @Disabled("Currently not possible to input empty string")
-    void willNotAccessEmptyRequiredParameter(){
+    void willNotAcceptEmptyRequiredParameter(){
         OutputStream out = new ByteArrayOutputStream();
-        InputStream in = createInputStreamForInput(" ");
+        InputStream in = createInputStreamForInput("\nTestname");
         IO cli = new IO(in, out);
 
         cli.getRequiredParameter("Name");
 
         String output = out.toString();
-        assertEquals("Name? (*)"+System.lineSeparator(), output);
+        String expectedOutput = "Name? (*)"+System.lineSeparator()+"Name? (*)"+System.lineSeparator();
+        assertEquals(expectedOutput, output);
     }
 
     @Test
@@ -55,6 +54,19 @@ class IOTest {
 
         String output = out.toString();
         assertEquals("Description?"+System.lineSeparator(), output);
+    }
+
+    @Test
+    void acceptsEmptyOptionalParameter() {
+        OutputStream out = new ByteArrayOutputStream();
+        InputStream in = createInputStreamForInput("\n");
+        IO cli = new IO(in, out);
+
+        cli.getOptionalParameter("Description");
+
+        String output = out.toString();
+        String expectedOutput = "Description?"+System.lineSeparator();
+        assertEquals(expectedOutput, output);
     }
 
     @Test
@@ -149,7 +161,6 @@ class IOTest {
     }
 
     @Test
-    @Disabled("Loads infinite")
     void canReadInputKey(){
         InputStream in = createInputStreamForInput("a");
         OutputStream out = new ByteArrayOutputStream();
