@@ -50,7 +50,7 @@ class TableTest {
         table.withDividerRow();
         table.withRow("Name2", "Value2");
 
-        String expected = "Name1: Value1\n---------------------\nName2: Value2\n";
+        String expected = "Name1: Value1\r\n---------------------\r\nName2: Value2\r\n";
         assertEquals(expected, table.toString());
     }
 

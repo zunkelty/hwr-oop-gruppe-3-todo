@@ -7,9 +7,7 @@ public class AppConfig {
     private static final Properties properties = new Properties();
     private static boolean isInitialized = false;
 
-    private AppConfig(){
-        throw new IllegalStateException("Utility class");
-    }
+    private AppConfig(){}
 
     private static void loadProperties() {
         try(FileInputStream fileInputStream = new FileInputStream("AppConfig.properties")){

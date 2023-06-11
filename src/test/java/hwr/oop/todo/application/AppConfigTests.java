@@ -5,12 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppConfigTests {
     @Test
-    void canLoadValidProperty(){
+    void canLoadValidProperty() {
         assertNotNull(AppConfig.getProperty("db.url"));
     }
 
     @Test
-    void canLoadInvalidProperty(){
+    void canLoadInvalidProperty() {
         assertNull(AppConfig.getProperty("db.url.invalid"));
     }
+
 }

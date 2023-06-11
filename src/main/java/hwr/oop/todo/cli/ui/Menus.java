@@ -285,7 +285,5 @@ public class Menus {
         return StringResponse.with("Tag wurde zur Aufgabe hinzugefügt");
     }
 
-    private Menus() {
-
-    }
+    private Menus() {}
 }

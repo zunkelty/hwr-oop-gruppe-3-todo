@@ -391,4 +391,24 @@ class MenusTest {
         // To compare the tables, we can't use `equals`
         assertTrue(rows.containsAll(expectedRows));
     }
-}
+
+    @Test
+    void canUpdateTask(){
+        UseCases useCases = UseCases.initialize(mockPersistence);
+
+        Task task = TaskFactory.createTask("Test Task");
+        useCases.getCreateTaskUseCase().insertTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.TASK.handle('e', useCases, parameterProvider);
+
+        assertTrue(response.isSuccess());
+        assertNotNull(task);
+
+
+    }
+
+
+    }
+
