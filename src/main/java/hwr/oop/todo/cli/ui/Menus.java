@@ -2,6 +2,7 @@ package hwr.oop.todo.cli.ui;
 
 import hwr.oop.todo.application.usecases.UseCases;
 import hwr.oop.todo.cli.ui.menu.Menu;
+import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
 import hwr.oop.todo.cli.ui.menu.responses.StringResponse;
 import hwr.oop.todo.cli.ui.menu.responses.TableResponse;
 import hwr.oop.todo.library.project.Project;
@@ -25,11 +26,14 @@ public class Menus {
 
     private static final String DESC = "Beschreibung";
 
+    private static final String STATE = taskStateToString(TaskState.OPEN);
+
     public static final Menu TASK = new Menu()
             .on('a', "Aufgabe anlegen").execute(Menus::createTask)
             .on('b', "Aufgabe anzeigen (mit ID)").execute(Menus::getTask)
             .on('c', "Tag zu Aufgabe hinzufügen").execute(Menus::addTagToTask)
             .on('d', "Alle offenen Aufgaben anzeigen").execute(Menus::showOpenTasks)
+            .on('e', "Aufgabe bearbeiten").execute(Menus::updateTask)
             .on('z', BACK).navigateTo(() -> Menus.HOME);
 
     public static final Menu PROJECT = new Menu()
@@ -63,6 +67,28 @@ public class Menus {
         if(taskState == TaskState.IN_PROGRESS) return "In Bearbeitung";
         if(taskState == TaskState.DONE) return "Erledigt";
         return "Unbekannt";
+    }
+
+    private static TaskState stringToTaskState(String taskState){
+        if(taskState == "Nicht begonnen") return TaskState.OPEN;
+        if(taskState == "In Bearbeitung") return TaskState.IN_PROGRESS;
+        if(taskState == "Erledigt") return TaskState.DONE;
+        return TaskState.OPEN;
+    }
+
+    private static MenuResponse updateTask(UseCases useCases, ParameterProvider parameter) {
+        String sId = parameter.getRequiredParameter("ID");
+        Optional<String> title = parameter.getOptionalParameter(TITLE);
+        Optional<String> description = parameter.getOptionalParameter(DESC);
+        Optional<String> state = parameter.getOptionalParameter(STATE);
+        UUID id = UUID.fromString(sId);
+        Task task = useCases.getTaskUseCase().getTaskById(id);
+        task.setTitle(title.orElse(task.getTitle()));
+        task.setDescription(description.orElse(task.getDescription()));
+        task.setState(stringToTaskState(state.orElse(taskStateToString(task.getState()))));
+        useCases.getEditTaskUseCase().editTask(task);
+
+        return StringResponse.with("Aufgabe wurde bearbeitet (ID: " + task.getId() + ")");
     }
 
     private static StringResponse createTask(UseCases useCases, ParameterProvider parameters) {

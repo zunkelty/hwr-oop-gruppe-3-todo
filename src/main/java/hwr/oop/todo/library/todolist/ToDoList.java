@@ -64,6 +64,13 @@ public class ToDoList {
         tags.put(id, tag);
     }
 
+    public Task editTask(Task task){
+        UUID id = task.getId();
+        if(!tasks.containsKey(id)) throw NotFoundException.withItemName("Task");
+        tasks.put(id, task);
+        return task;
+    }
+
     public List<Task> getOpenTasks(){
         return tasks.values().stream().filter(task -> task.getState() != TaskState.DONE).collect(Collectors.toList());
     }

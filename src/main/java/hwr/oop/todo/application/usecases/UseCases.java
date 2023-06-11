@@ -18,6 +18,7 @@ public class UseCases {
     GetTagUseCase getTagUseCase;
     AddTagToTaskUseCase addTagToTaskUseCase;
     GetOpenTasksUseCase getOpenTasksUseCase;
+    UpdateTaskUseCase updateTaskUseCase;
 
 
     public static UseCases initialize(Persistence persistence) {
@@ -36,6 +37,7 @@ public class UseCases {
         GetTagUseCase getTagUseCase = new GetTagUseCase(toDoList);
         AddTagToTaskUseCase addTagToTaskUseCase = new AddTagToTaskUseCase(toDoList, persistence);
         GetOpenTasksUseCase getOpenTasksUseCase = new GetOpenTasksUseCase(toDoList);
+        UpdateTaskUseCase updateTaskUseCase = new UpdateTaskUseCase(toDoList, persistence);
 
         return new UseCases(createTaskUseCase, getTaskUseCase, createInTrayTaskUseCase, getInTrayTaskUseCase, deleteInTrayTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase, getOpenTasksUseCase);
     }
@@ -54,6 +56,7 @@ public class UseCases {
         this.getTagUseCase = getTagUseCase;
         this.addTagToTaskUseCase = addTagToTaskUseCase;
         this.getOpenTasksUseCase = getOpenTasksUseCase;
+        this.updateTaskUseCase = updateTaskUseCase;
     }
 
     public CreateTaskUseCase getCreateTaskUseCase() {
@@ -105,5 +108,9 @@ public class UseCases {
 
     public GetOpenTasksUseCase getOpenTasksUseCase() {
         return getOpenTasksUseCase;
+    }
+
+    public UpdateTaskUseCase getEditTaskUseCase() {
+        return updateTaskUseCase;
     }
 }
