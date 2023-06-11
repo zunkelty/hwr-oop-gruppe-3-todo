@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppConfigTests {
+
     @Test
     void canLoadValidProperty() {
         assertNotNull(AppConfig.getProperty("db.url"));

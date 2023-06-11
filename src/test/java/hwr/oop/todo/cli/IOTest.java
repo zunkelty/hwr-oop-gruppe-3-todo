@@ -10,8 +10,10 @@ import org.junit.jupiter.api.*;
 import java.io.*;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class IOTest {
 
@@ -23,10 +25,12 @@ class IOTest {
     @Test
     void canAskForRequiredParameter(){
         OutputStream out = new ByteArrayOutputStream();
-        InputStream in = createInputStreamForInput("a");
+        InputStream in = createInputStreamForInput("Parameter Name");
         IO cli = new IO(in, out);
 
-        cli.getRequiredParameter("Name");
+        String parameter = cli.getRequiredParameter("Name");
+
+        assertEquals("Parameter Name", parameter);
 
         String output = out.toString();
         assertEquals("Name? (*)"+System.lineSeparator(), output);
@@ -36,22 +40,29 @@ class IOTest {
     void willNotAcceptEmptyRequiredParameter(){
         OutputStream out = new ByteArrayOutputStream();
         InputStream in = createInputStreamForInput("\nTestname");
-        IO cli = new IO(in, out);
 
-        cli.getRequiredParameter("Name");
+        IO cli = new IO(in, out);
+        IO cliSpy = spy(cli);
+
+        cliSpy.getRequiredParameter("Name");
 
         String output = out.toString();
         String expectedOutput = "Name? (*)"+System.lineSeparator()+"Name? (*)"+System.lineSeparator();
         assertEquals(expectedOutput, output);
+
+        verify(cliSpy, times(2)).getRequiredParameter("Name");
     }
 
     @Test
     void canAskForOptionalParameter(){
         OutputStream out = new ByteArrayOutputStream();
-        InputStream in = createInputStreamForInput("a");
+        InputStream in = createInputStreamForInput("Parameter");
         IO cli = new IO(in, out);
 
-        cli.getOptionalParameter("Description");
+        Optional<String> parameter = cli.getOptionalParameter("Description");
+        assertFalse(parameter::isEmpty);
+        assertTrue(parameter.isPresent());
+        assertEquals("Parameter", parameter.get());
 
         String output = out.toString();
         assertEquals("Description?"+System.lineSeparator(), output);
@@ -63,7 +74,8 @@ class IOTest {
         InputStream in = createInputStreamForInput("\n");
         IO cli = new IO(in, out);
 
-        cli.getOptionalParameter("Description");
+        Optional<String> parameter = cli.getOptionalParameter("Description");
+        assertTrue(parameter::isEmpty);
 
         String output = out.toString();
         String expectedOutput = "Description?"+System.lineSeparator();

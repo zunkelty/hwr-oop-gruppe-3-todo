@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MenuControllerTest {
@@ -87,6 +88,8 @@ class MenuControllerTest {
         controller.execute();
 
         String output = out.toString();
+
+        assertFalse(output.contains("Das hat leider nicht geklappt..."));
         assertTrue(output.contains("Auf Wiedersehen!"));
     }
 
@@ -102,6 +105,24 @@ class MenuControllerTest {
         controller.execute();
 
         String output = out.toString();
+        assertTrue(output.contains("The key '8' is not valid."));
+        assertTrue(output.contains("Das hat leider nicht geklappt..."));
+        assertTrue(output.contains("Auf Wiedersehen!"));
+    }
+
+    @Test
+    void printsTable() {
+        ByteArrayInputStream in = new ByteArrayInputStream("a\nd\nz\nq".getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        IO io = new IO(in, out);
+        UseCases useCases = UseCases.initialize(persistence);
+        MenuController controller = new MenuController(useCases, io);
+
+        controller.execute();
+
+        String output = out.toString();
+        assertTrue(output.contains("--------------------"));
         assertTrue(output.contains("Das hat leider nicht geklappt..."));
         assertTrue(output.contains("Auf Wiedersehen!"));
     }

@@ -63,14 +63,14 @@ public class Menus {
             .on('d', "Eingangsliste").navigateTo(() -> Menus.INTRAY)
             .on('q', "Beenden").quit();
 
-    private static String taskStateToString(TaskState taskState){
+    static String taskStateToString(TaskState taskState){
         if(taskState == TaskState.OPEN) return "Nicht begonnen";
         if(taskState == TaskState.IN_PROGRESS) return "In Bearbeitung";
         if(taskState == TaskState.DONE) return "Erledigt";
         return "Unbekannt";
     }
 
-    private static TaskState stringToTaskState(String taskState){
+    static TaskState stringToTaskState(String taskState){
         if(taskState.equals("Nicht begonnen")) return TaskState.OPEN;
         if(taskState.equals("In Bearbeitung")) return TaskState.IN_PROGRESS;
         if(taskState.equals("Erledigt")) return TaskState.DONE;

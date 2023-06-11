@@ -4,22 +4,22 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 public class AppConfig {
-    private static final Properties properties = new Properties();
-    private static boolean isInitialized = false;
+    private static Properties properties;
 
     private AppConfig(){}
 
     private static void loadProperties() {
         try(FileInputStream fileInputStream = new FileInputStream("AppConfig.properties")){
-            properties.load(fileInputStream);
-            isInitialized = true;
+            AppConfig.properties = new Properties();
+            AppConfig.properties.load(fileInputStream);
         } catch (Exception e) {
+            AppConfig.properties = null;
             throw new FailedLoadPropertiesException(e);
         }
     }
 
     public static String getProperty(String key) {
-        if (!isInitialized) {
+        if (AppConfig.properties == null) {
             loadProperties();
         }
         return properties.getProperty(key);

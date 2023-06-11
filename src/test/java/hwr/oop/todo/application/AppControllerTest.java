@@ -2,18 +2,16 @@ package hwr.oop.todo.application;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class AppControllerTest {
-    private final static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
     private static final InputStream originalIn = System.in;
 
@@ -27,6 +25,13 @@ class AppControllerTest {
     static void restore() {
         System.setOut(originalOut);
         System.setIn(originalIn);
+    }
+
+    @BeforeEach
+    void setUp() throws IOException {
+        outContent.close();
+        outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
     }
 
     @Test

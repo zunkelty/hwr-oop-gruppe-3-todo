@@ -104,7 +104,7 @@ class MenusTest {
     }
 
     @Test
-    void AllSubmenusCanGoBackToHome(){
+    void AllSubmenusCanGoBackToHome() {
         Menus.HOME.getActions()
                 .stream()
                 .map(menuAction -> menuAction.run(null, null).navigationTarget())
@@ -120,7 +120,7 @@ class MenusTest {
     }
 
     @Test
-    void CanCreateTask(){
+    void CanCreateTask() {
         UseCases useCases = UseCases.initialize(mockPersistence);
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Task");
 
@@ -130,7 +130,7 @@ class MenusTest {
     }
 
     @Test
-    void CanGetTask(){
+    void CanGetTask() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Task task = TaskFactory.createTask("Test Task");
@@ -187,8 +187,9 @@ class MenusTest {
 
         assertEquals(expectedTable, table);
     }
+
     @Test
-    void CanDeleteInTrayTask(){
+    void CanDeleteInTrayTask() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Task task = TaskFactory.createTask("Test InTrayTask");
@@ -206,7 +207,7 @@ class MenusTest {
     }
 
     @Test
-    void CanMoveInTrayTask(){
+    void CanMoveInTrayTask() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Task task = TaskFactory.createTask("Test InTrayTask");
@@ -225,7 +226,7 @@ class MenusTest {
     }
 
     @Test
-    void CanCreateTag(){
+    void CanCreateTag() {
         UseCases useCases = UseCases.initialize(mockPersistence);
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Tag");
 
@@ -235,7 +236,7 @@ class MenusTest {
     }
 
     @Test
-    void CanGetTag(){
+    void CanGetTag() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Tag tag = TagFactory.createTag("Tag Name");
@@ -257,7 +258,7 @@ class MenusTest {
     }
 
     @Test
-    void CanCreateProject(){
+    void CanCreateProject() {
         UseCases useCases = UseCases.initialize(mockPersistence);
         ParameterProvider parameterProvider = new SequentialInputsParameterProvider("Test Project");
 
@@ -267,7 +268,7 @@ class MenusTest {
     }
 
     @Test
-    void CanGetProject(){
+    void CanGetProject() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Project project = ProjectFactory.createProject("Test Project");
@@ -289,7 +290,7 @@ class MenusTest {
     }
 
     @Test
-    void CanAddTaskToProject(){
+    void CanAddTaskToProject() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Project project = ProjectFactory.createProject("Test Project");
@@ -307,7 +308,7 @@ class MenusTest {
     }
 
     @Test
-    void CanAddTagToTask(){
+    void CanAddTagToTask() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Tag tag = TagFactory.createTag("Tag Name");
@@ -325,7 +326,7 @@ class MenusTest {
     }
 
     @Test
-    void CanGetTasksOfProject(){
+    void CanGetTasksOfProject() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Project project = ProjectFactory.createProject("Test Project");
@@ -354,7 +355,7 @@ class MenusTest {
     }
 
     @Test
-    void canGetOpenTasks(){
+    void canGetOpenTasks() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Task openTask = new Task(UUID.randomUUID(), "Open Task", "", TaskState.OPEN);
@@ -393,7 +394,7 @@ class MenusTest {
     }
 
     @Test
-    void canUpdateTask(){
+    void canUpdateTask() {
         UseCases useCases = UseCases.initialize(mockPersistence);
 
         Task task = TaskFactory.createTask("Test Task");
@@ -405,10 +406,33 @@ class MenusTest {
 
         assertTrue(response.isSuccess());
         assertNotNull(task);
-
-
     }
 
+    @Test
+    void canDisplayTaskAfterCompletion() {
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
+        Task task = TaskFactory.createTask("Test Task");
+        useCases.getCreateTaskUseCase().insertTask(task);
+
+        task.setState(TaskState.DONE);
+        useCases.getUpdateTaskUseCase().updateTask(task);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider(task.getId().toString());
+
+        MenuResponse response = Menus.TASK.handle('b', useCases, parameterProvider);
+
+        assertTrue(response.isSuccess());
+
+        Table table = new Table()
+                .withRow("ID", task.getId().toString())
+                .withRow("Titel", "Test Task")
+                .withRow("Beschreibung", "")
+                .withRow("Status", "Erledigt")
+                .withRow("Tags", "");
+
+        assertTrue(response.table().isPresent());
+        assertEquals(table, response.table().get());
     }
+}
 
