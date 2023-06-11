@@ -147,6 +147,7 @@ public class DatabaseAdapterTest {
         assertThrows(NotFoundException.class, () -> getTaskById(taskId));
     }
 
+
     @Test
     void canInsertProject() {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
@@ -184,6 +185,7 @@ public class DatabaseAdapterTest {
         Project p = databaseAdapter.getProject(project.getId());
 
         assertEquals("Updated Test Project", p.getName());
+
     }
 
     @Test
