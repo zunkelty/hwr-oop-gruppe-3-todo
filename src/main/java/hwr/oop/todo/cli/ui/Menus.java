@@ -27,8 +27,6 @@ public class Menus {
 
     private static final String DESC = "Beschreibung";
 
-    private static final String STATE = taskStateToString(TaskState.OPEN);
-
     public static final Menu TASK = new Menu()
             .on('a', "Aufgabe anlegen").execute(Menus::createTask)
             .on('b', "Aufgabe anzeigen (mit ID)").execute(Menus::getTask)
@@ -79,14 +77,19 @@ public class Menus {
 
     private static MenuResponse updateTask(UseCases useCases, ParameterProvider parameter) {
         String sId = parameter.getRequiredParameter("ID");
-        Optional<String> title = parameter.getOptionalParameter(TITLE);
-        Optional<String> description = parameter.getOptionalParameter(DESC);
-        Optional<String> state = parameter.getOptionalParameter(STATE);
+
+        Optional<String> title = parameter.getOptionalParameter(TITLE+" (Enter für keine Änderungen)");
+        Optional<String> description = parameter.getOptionalParameter(DESC+ " (Enter für keine Änderungen)");
+        Optional<String> state = parameter.getOptionalParameter("Status ("+taskStateToString(TaskState.OPEN)+"/"+taskStateToString(TaskState.IN_PROGRESS)+"/"+taskStateToString(TaskState.DONE)+")");
+
         UUID id = UUID.fromString(sId);
+
         Task task = useCases.getTaskUseCase().getTaskById(id);
+
         task.setTitle(title.orElse(task.getTitle()));
         task.setDescription(description.orElse(task.getDescription()));
         task.setState(stringToTaskState(state.orElse(taskStateToString(task.getState()))));
+
         useCases.getUpdateTaskUseCase().updateTask(task);
 
         return StringResponse.with("Aufgabe wurde bearbeitet (ID: " + task.getId() + ")");
