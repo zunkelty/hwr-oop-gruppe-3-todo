@@ -8,6 +8,7 @@ import hwr.oop.todo.library.todolist.NotFoundException;
 import hwr.oop.todo.library.todolist.ToDoList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import hwr.oop.todo.library.project.Project;
@@ -21,6 +22,7 @@ class ToDoListTest {
     @BeforeEach
     void setUp() {
         toDoList = new ToDoList();
+
     }
 
     @Test
@@ -82,9 +84,14 @@ class ToDoListTest {
     void canDeleteInTrayTask() {
         Task task = TaskFactory.createTask("Example Task");
         toDoList.createInTrayTask(task);
-        toDoList.deleteInTrayTask(task.getId());
 
-        assertThrows(NotFoundException.class, () -> toDoList.getInTrayTask(task.getId()));
+        UUID TestID = task.getId();
+
+        toDoList.deleteInTrayTask(TestID);
+
+        assertThrows(NotFoundException.class, () -> {
+            toDoList.getInTrayTask(TestID);
+        });
     }
 
     @Test
@@ -150,4 +157,15 @@ class ToDoListTest {
         // Getting a tag with an invalid ID should throw NotFoundException
         assertThrows(NotFoundException.class, () -> toDoList.getTag(invalidId));
     }
+
+
+    @Test
+    void testEditNonExistingTask() {
+        UUID taskId = UUID.randomUUID();
+        Task task = new Task(taskId, "Testaufgabe", "Beschreibung");
+
+        // Überprüfen, ob eine NotFoundException ausgelöst wird
+       assertThrows(NotFoundException.class, () -> toDoList.editTask(task));
+    }
+
 }

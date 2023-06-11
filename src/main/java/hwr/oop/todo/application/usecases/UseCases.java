@@ -43,7 +43,7 @@ public class UseCases {
     }
 
 
-    // java
+    @SuppressWarnings("java:S107")
     public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase,CreateInTrayTaskUseCase createInTrayTaskUseCase, GetInTrayTaskUseCase getInTrayTaskUseCase, DeleteInTrayTaskUseCase deleteInTrayTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase, GetOpenTasksUseCase getOpenTasksUseCase, UpdateTaskUseCase updateTaskUseCase) {
         this.createTaskUseCase = createTaskUseCase;
         this.getTaskUseCase = getTaskUseCase;

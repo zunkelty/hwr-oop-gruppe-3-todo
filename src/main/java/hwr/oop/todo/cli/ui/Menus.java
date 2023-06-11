@@ -26,6 +26,8 @@ public class Menus {
     private static final String TITLE = "Titel";
 
     private static final String DESC = "Beschreibung";
+    
+    private static final String TASKID = "Aufgaben ID";
 
     public static final Menu TASK = new Menu()
             .on('a', "Aufgabe anlegen").execute(Menus::createTask)
@@ -179,7 +181,7 @@ public class Menus {
     }
 
     private static StringResponse moveInTrayTask(UseCases useCases, ParameterProvider parameterProvider) {
-        String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
+        String sTaskId = parameterProvider.getRequiredParameter(TASKID);
 
         UUID taskId = UUID.fromString(sTaskId);
 
@@ -217,7 +219,7 @@ public class Menus {
 
     private static StringResponse addTaskToProject(UseCases useCases, ParameterProvider parameterProvider){
         String sProjectId = parameterProvider.getRequiredParameter("Projekt ID");
-        String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
+        String sTaskId = parameterProvider.getRequiredParameter(TASKID);
 
         UUID projectId = UUID.fromString(sProjectId);
         UUID taskId = UUID.fromString(sTaskId);
@@ -273,7 +275,7 @@ public class Menus {
 
     private static StringResponse addTagToTask(UseCases useCases, ParameterProvider parameterProvider){
         String sTagId = parameterProvider.getRequiredParameter("Tag ID");
-        String sTaskId = parameterProvider.getRequiredParameter("Aufgaben ID");
+        String sTaskId = parameterProvider.getRequiredParameter(TASKID);
 
         UUID tagId = UUID.fromString(sTagId);
         UUID taskId = UUID.fromString(sTaskId);

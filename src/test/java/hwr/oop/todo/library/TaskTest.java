@@ -2,6 +2,7 @@ package hwr.oop.todo.library;
 
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.TaskFactory;
+import hwr.oop.todo.library.task.TaskState;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -94,6 +95,37 @@ class TaskTest {
         Task task2 = TaskFactory.createTask(title);
 
         assertNotEquals(task1.hashCode(), task2.hashCode());
+    }
+
+    @Test
+    void canCreateTaskWithInitialState() {
+        String title = "Example Task";
+        Task task1 = TaskFactory.createTask(title);
+
+        assertEquals(TaskState.OPEN, task1.getState());
+    }
+
+    @Test
+    void canSetState() {
+        String title = "Example Task";
+        Task task1 = TaskFactory.createTask(title);
+
+        task1.setState(TaskState.IN_PROGRESS);
+        assertEquals(TaskState.IN_PROGRESS, task1.getState());
+
+        task1.setState(TaskState.DONE);
+        assertEquals(TaskState.DONE, task1.getState());
+    }
+
+    @Test
+    void canSetDescription() {
+        String title = "Example Task";
+        Task task1 = TaskFactory.createTask(title);
+
+        task1.setDescription("New description");
+
+        assertEquals("New description", task1.getDescription());
+
     }
 
 }

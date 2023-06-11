@@ -53,5 +53,16 @@ class TagTest {
         assertNotEquals(tag1.hashCode(), tag2.hashCode());
     }
 
+    @Test
+    void canSetDescription() {
+        String title = "Example Task";
+        Tag tag1 = TagFactory.createTag(title);
+
+        tag1.setDescription("New description");
+
+        assertEquals("New description", tag1.getDescription());
+
+    }
+
 
 }

@@ -18,6 +18,9 @@ public class DatabaseAdapter implements Persistence {
 
     private final Connection connection;
 
+    private static final String DESC = "description";
+
+
     public DatabaseAdapter(String connectionUrl) {
         try {
             connection = DriverManager.getConnection(connectionUrl);
@@ -125,7 +128,7 @@ public class DatabaseAdapter implements Persistence {
             Tag tag = null;
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
+                String description = resultSet.getString(DESC);
                 tag = TagFactory.createTag(id, name, description);
             }
             resultSet.close();
@@ -180,7 +183,7 @@ public class DatabaseAdapter implements Persistence {
             while (resultSet.next()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
                 String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
+                String description = resultSet.getString(DESC);
                 tags.add(new Tag(id, name, description));
             }
 
@@ -227,7 +230,7 @@ public class DatabaseAdapter implements Persistence {
             while (resultSet.next()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
                 String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
+                String description = resultSet.getString(DESC);
                 TaskState state = TaskState.valueOf(resultSet.getString("state"));
                 tasks.add(new Task(id, title, description, state));
             }
@@ -252,7 +255,7 @@ public class DatabaseAdapter implements Persistence {
             while (resultSet.next()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
                 String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
+                String description = resultSet.getString(DESC);
                 TaskState state = TaskState.valueOf(resultSet.getString("state"));
                 tasks.add(new Task(id, title, description, state));
             }
