@@ -37,10 +37,10 @@ class AppControllerTest {
         String expected =
                 "|---------------------------------|" + System.lineSeparator() +
                         "| a: Tasks anzeigen/bearbeiten    |" + System.lineSeparator() +
-                        "| q: Beenden                      |" + System.lineSeparator() +
                         "| b: Projekte anzeigen/bearbeiten |" + System.lineSeparator() +
                         "| c: Tags anzeigen/bearbeiten     |" + System.lineSeparator() +
                         "| d: Eingangsliste                |" + System.lineSeparator() +
+                        "| q: Beenden                      |" + System.lineSeparator() +
                         "|---------------------------------|" + System.lineSeparator() +
                         "Press a key to continue" + System.lineSeparator() +
                         "Auf Wiedersehen!"+System.lineSeparator();

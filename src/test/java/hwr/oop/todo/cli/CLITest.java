@@ -8,15 +8,10 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CLITest {
-    private InputStream createInputStreamForInput(String input) {
-        byte[] inputInBytes = input.getBytes();
-        return new ByteArrayInputStream(inputInBytes);
-    }
-
+class CLITest {
     @Test
     void printsToOutputStream() {
-        InputStream in = createInputStreamForInput("q");
+        InputStream in = new ByteArrayInputStream("q".getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         CLI cli = new CLI(in, out, null);
@@ -26,10 +21,10 @@ public class CLITest {
         String expected =
                 "|---------------------------------|" + System.lineSeparator() +
                         "| a: Tasks anzeigen/bearbeiten    |" + System.lineSeparator() +
-                        "| q: Beenden                      |" + System.lineSeparator() +
                         "| b: Projekte anzeigen/bearbeiten |" + System.lineSeparator() +
                         "| c: Tags anzeigen/bearbeiten     |" + System.lineSeparator() +
                         "| d: Eingangsliste                |" + System.lineSeparator() +
+                        "| q: Beenden                      |" + System.lineSeparator() +
                         "|---------------------------------|" + System.lineSeparator() +
                         "Press a key to continue" + System.lineSeparator() +
                         "Auf Wiedersehen!"+System.lineSeparator();

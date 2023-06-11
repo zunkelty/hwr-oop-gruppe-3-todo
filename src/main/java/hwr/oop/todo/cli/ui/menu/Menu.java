@@ -7,14 +7,11 @@ import hwr.oop.todo.cli.ui.ParameterProvider;
 import hwr.oop.todo.cli.ui.menu.responses.InvalidKeyResponse;
 import hwr.oop.todo.cli.ui.menu.responses.ErrorResponse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Menu {
-    private final Map<Character, MenuAction> actions = new HashMap<>();
+    private final Map<Character, MenuAction> actions = new LinkedHashMap<>();
 
     public MenuResponseInContext on(char key, String description) {
         return new MenuResponseInContext(key, description, this);
