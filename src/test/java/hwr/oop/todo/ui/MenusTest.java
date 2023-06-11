@@ -66,6 +66,7 @@ class MenusTest {
         public void updateTask(Task task) {
 
         }
+
     };
 
     private static class SequentialInputsParameterProvider implements ParameterProvider {
@@ -405,8 +406,6 @@ class MenusTest {
 
         assertTrue(response.isSuccess());
         assertNotNull(task);
-
-
     }
 
 
