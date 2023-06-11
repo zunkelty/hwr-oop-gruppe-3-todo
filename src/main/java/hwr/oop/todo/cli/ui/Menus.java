@@ -86,7 +86,7 @@ public class Menus {
         task.setTitle(title.orElse(task.getTitle()));
         task.setDescription(description.orElse(task.getDescription()));
         task.setState(stringToTaskState(state.orElse(taskStateToString(task.getState()))));
-        useCases.getEditTaskUseCase().editTask(task);
+        useCases.getUpdateTaskUseCase().updateTask(task);
 
         return StringResponse.with("Aufgabe wurde bearbeitet (ID: " + task.getId() + ")");
     }

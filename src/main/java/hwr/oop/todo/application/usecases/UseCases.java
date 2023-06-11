@@ -110,7 +110,7 @@ public class UseCases {
         return getOpenTasksUseCase;
     }
 
-    public UpdateTaskUseCase getEditTaskUseCase() {
+    public UpdateTaskUseCase getUpdateTaskUseCase() {
         return updateTaskUseCase;
     }
 }
