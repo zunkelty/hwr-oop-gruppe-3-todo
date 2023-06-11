@@ -1,5 +1,7 @@
 package hwr.oop.todo.library;
 
+import hwr.oop.todo.library.task.Task;
+import hwr.oop.todo.library.task.TaskFactory;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
