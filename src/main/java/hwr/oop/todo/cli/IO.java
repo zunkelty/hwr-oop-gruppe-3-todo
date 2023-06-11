@@ -5,6 +5,7 @@ import hwr.oop.todo.cli.ui.NavigationInput;
 import hwr.oop.todo.cli.ui.menu.FailedWriteException;
 import hwr.oop.todo.cli.ui.menu.MenuAction;
 import hwr.oop.todo.cli.ui.ParameterProvider;
+import hwr.oop.todo.cli.ui.menu.responses.Table;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,9 +74,9 @@ public class IO implements ParameterProvider, NavigationInput, Display {
     }
 
     @Override
-    public void displayTable(Map<String, String> table) {
+    public void displayTable(Table table) {
         List<String> lines = new ArrayList<>();
-        table.forEach((key, value) -> lines.add(key+ ": "+value));
+        table.getRows().forEach(row -> lines.add(row.toString()));
 
         int longest = lines.stream().mapToInt(String::length).max().orElse(0);
 
@@ -93,10 +94,10 @@ public class IO implements ParameterProvider, NavigationInput, Display {
 
     @Override
     public void displayMenuActions(List<MenuAction> menuActions) {
-        Map<String, String> table = new HashMap<>();
+        Table table = new Table();
 
         for (MenuAction action : menuActions) {
-            table.put(String.valueOf(action.getKey()), action.getDescription());
+            table.withRow(String.valueOf(action.getKey()), action.getDescription());
         }
 
         displayTable(table);

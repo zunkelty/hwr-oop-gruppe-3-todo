@@ -36,4 +36,10 @@ class StringResponseTest {
         assertFalse(response.table().isPresent());
     }
 
+    @Test
+    void shouldNotQuit() {
+        StringResponse response = StringResponse.with("This is message!");
+        assertFalse(response.shouldQuit());
+    }
+
 }

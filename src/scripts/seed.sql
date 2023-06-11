@@ -3,6 +3,7 @@ DELETE FROM Projects_Tasks;
 DELETE FROM Tags;
 DELETE FROM Projects;
 DELETE FROM Tasks;
+DELETE FROM InTrayTasks;
 
 INSERT INTO Tasks (id, title, description, state) VALUES ('00000000-0000-0000-0000-000000000001', 'Water plants', 'Only plants on balcony', 'OPEN');
 INSERT INTO Tasks (id, title, description, state) VALUES ('00000000-0000-0000-0000-000000000002', 'Buy groceries', 'For the weekend', 'OPEN');
@@ -15,3 +16,5 @@ INSERT INTO Projects_Tasks (task_id, project_id) VALUES ('00000000-0000-0000-000
 INSERT INTO Tags_Tasks (task_id, tag_id) VALUES ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001');
 INSERT INTO Tags_Tasks (task_id, tag_id) VALUES ('00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001');
 INSERT INTO Tags_Tasks (task_id, tag_id) VALUES ('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001');
+
+INSERT INTO InTrayTasks (id, title, description, state) VALUES ('00000000-0000-0000-0000-000000000001', 'Study for math exam', '', 'OPEN');

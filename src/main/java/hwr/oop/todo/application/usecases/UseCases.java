@@ -22,13 +22,13 @@ public class UseCases {
 
 
     public static UseCases initialize(Persistence persistence) {
-        ToDoList toDoList = persistence.loadToDoList();
+        ToDoList toDoList = persistence.readToDoList();
 
         CreateTaskUseCase createTaskUseCase = new CreateTaskUseCase(toDoList, persistence);
         GetTaskUseCase getTaskUseCase = new GetTaskUseCase(toDoList);
-        CreateInTrayTaskUseCase createInTrayTaskUseCase = new CreateInTrayTaskUseCase(toDoList);
+        CreateInTrayTaskUseCase createInTrayTaskUseCase = new CreateInTrayTaskUseCase(toDoList, persistence);
         GetInTrayTaskUseCase getInTrayTaskUseCase = new GetInTrayTaskUseCase (toDoList);
-        DeleteInTrayTaskUseCase deleteInTrayTaskUseCase = new DeleteInTrayTaskUseCase(toDoList);
+        DeleteInTrayTaskUseCase deleteInTrayTaskUseCase = new DeleteInTrayTaskUseCase(toDoList, persistence);
         CreateProjectUseCase createProjectUseCase = new CreateProjectUseCase(toDoList, persistence);
         GetProjectUseCase getProjectUseCase = new GetProjectUseCase(toDoList);
         AddTaskToProjectUseCase addTaskToProjectUseCase = new AddTaskToProjectUseCase(toDoList, persistence);
@@ -39,10 +39,12 @@ public class UseCases {
         GetOpenTasksUseCase getOpenTasksUseCase = new GetOpenTasksUseCase(toDoList);
         UpdateTaskUseCase updateTaskUseCase = new UpdateTaskUseCase(toDoList, persistence);
 
-        return new UseCases(createTaskUseCase, getTaskUseCase, createInTrayTaskUseCase, getInTrayTaskUseCase, deleteInTrayTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase, getOpenTasksUseCase);
+        return new UseCases(createTaskUseCase, getTaskUseCase, createInTrayTaskUseCase, getInTrayTaskUseCase, deleteInTrayTaskUseCase, createProjectUseCase, getProjectUseCase, addTaskToProjectUseCase, getTasksFromProjectUseCase, createTagUseCase, getTagUseCase, addTagToTaskUseCase, getOpenTasksUseCase, updateTaskUseCase);
     }
 
-    public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase,CreateInTrayTaskUseCase createInTrayTaskUseCase, GetInTrayTaskUseCase getInTrayTaskUseCase, DeleteInTrayTaskUseCase deleteInTrayTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase, GetOpenTasksUseCase getOpenTasksUseCase){
+
+    // java
+    public UseCases(CreateTaskUseCase createTaskUseCase, GetTaskUseCase getTaskUseCase,CreateInTrayTaskUseCase createInTrayTaskUseCase, GetInTrayTaskUseCase getInTrayTaskUseCase, DeleteInTrayTaskUseCase deleteInTrayTaskUseCase, CreateProjectUseCase createProjectUseCase, GetProjectUseCase getProjectUseCase, AddTaskToProjectUseCase addTaskToProjectUseCase, GetTasksFromProjectUseCase getTasksFromProjectUseCase, CreateTagUseCase createTagUseCase, GetTagUseCase getTagUseCase, AddTagToTaskUseCase addTagToTaskUseCase, GetOpenTasksUseCase getOpenTasksUseCase, UpdateTaskUseCase updateTaskUseCase) {
         this.createTaskUseCase = createTaskUseCase;
         this.getTaskUseCase = getTaskUseCase;
         this.createInTrayTaskUseCase = createInTrayTaskUseCase;

@@ -2,19 +2,17 @@ package hwr.oop.todo.cli.ui.menu.responses;
 
 import hwr.oop.todo.cli.ui.menu.Menu;
 
-import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class TableResponse implements MenuResponse{
-    private final LinkedHashMap<String, String> response;
+    private final Table table;
 
-    public TableResponse(){
-        response = new LinkedHashMap<>();
+    public TableResponse(Table table){
+        this.table = table;
     }
 
-    public TableResponse withRow(String name, String value){
-        response.put(name, value);
-        return this;
+    public static TableResponse withTable(Table table){
+        return new TableResponse(table);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class TableResponse implements MenuResponse{
     }
 
     @Override
-    public Optional<LinkedHashMap<String, String>> table() {
-        return Optional.of(response);
+    public Optional<Table> table() {
+        return Optional.of(table);
     }
 }

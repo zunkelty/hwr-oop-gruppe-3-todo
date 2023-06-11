@@ -6,6 +6,9 @@ import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
+import hwr.oop.todo.library.task.TaskState;
+import hwr.oop.todo.library.todolist.NotFoundException;
+import hwr.oop.todo.library.todolist.ToDoList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,13 +76,35 @@ public class DatabaseAdapterTest {
         }
     }
 
+    private Task getTaskById(UUID id) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = String.format("SELECT * FROM Tasks WHERE id = '%s'", id);
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if(!resultSet.next()){
+                throw new NotFoundException("Task");
+            }
+
+            String title = resultSet.getString("title");
+            String description = resultSet.getString("description");
+            TaskState state = TaskState.valueOf(resultSet.getString("state"));
+            Task task = new Task(id, title, description, state);
+
+            resultSet.close();
+            statement.close();
+
+            return task;
+        } catch (SQLException e) {
+            throw new FailedDatabaseStatementException(e);
+        }
+    }
+
     @Test
     void canGetTaskById() {
-        DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
-
         UUID taskId = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
-        Task task = databaseAdapter.getTask(taskId);
+        Task task = getTaskById(taskId);
 
         assertEquals("Water plants", task.getTitle());
     }
@@ -89,9 +114,9 @@ public class DatabaseAdapterTest {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
         Task writtenTask = TaskFactory.createTask("Test Task", "Test Description");
 
-        databaseAdapter.insertTask(writtenTask);
+        databaseAdapter.createTask(writtenTask);
 
-        Task readTask = databaseAdapter.getTask(writtenTask.getId());
+        Task readTask = getTaskById(writtenTask.getId());
 
         assertEquals(writtenTask.getId(), readTask.getId());
     }
@@ -100,13 +125,13 @@ public class DatabaseAdapterTest {
     void canHandleFailedDatabaseStatements() {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection){
             @Override
-            public void insertTask(Task task) throws FailedDatabaseStatementException {
+            public void createTask(Task task) throws FailedDatabaseStatementException {
                 throw new FailedDatabaseStatementException(new Exception("Test"));
             }
         };
 
         Task task = TaskFactory.createTask("Test Task", "Test Description");
-        assertThrows(FailedDatabaseStatementException.class, () -> databaseAdapter.insertTask(task));
+        assertThrows(FailedDatabaseStatementException.class, () -> databaseAdapter.createTask(task));
         databaseAdapter.deleteTask(task);
     }
 
@@ -114,13 +139,12 @@ public class DatabaseAdapterTest {
     void canDeleteTask() {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
 
-        Task writtenTask = databaseAdapter.getTask(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+        Task writtenTask = getTaskById(UUID.fromString("00000000-0000-0000-0000-000000000001"));
 
         databaseAdapter.deleteTask(writtenTask);
 
-        Task readTask = databaseAdapter.getTask(writtenTask.getId());
-
-        assertNull(readTask);
+        UUID taskId = writtenTask.getId();
+        assertThrows(NotFoundException.class, () -> getTaskById(taskId));
     }
 
     @Test
@@ -128,7 +152,7 @@ public class DatabaseAdapterTest {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
         Project project = ProjectFactory.createProject("Test Project");
 
-        databaseAdapter.insertProject(project);
+        databaseAdapter.createProject(project);
 
         Project p = databaseAdapter.getProject(project.getId());
 
@@ -152,7 +176,7 @@ public class DatabaseAdapterTest {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
         Project project = ProjectFactory.createProject("Test Project");
 
-        databaseAdapter.insertProject(project);
+        databaseAdapter.createProject(project);
 
         project.setName("Updated Test Project");
         databaseAdapter.updateProject(project);
@@ -167,7 +191,7 @@ public class DatabaseAdapterTest {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
         Tag tag = TagFactory.createTag("Test Tag");
 
-        databaseAdapter.insertTag(tag);
+        databaseAdapter.createTag(tag);
         Tag t = databaseAdapter.getTag(tag.getId());
 
         assertEquals(tag.getId(), t.getId());
@@ -190,7 +214,7 @@ public class DatabaseAdapterTest {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
         Tag tag = TagFactory.createTag("Test Tag");
 
-        databaseAdapter.insertTag(tag);
+        databaseAdapter.createTag(tag);
 
         tag.setName("Updated Test Tag");
         databaseAdapter.updateTag(tag);
@@ -203,13 +227,44 @@ public class DatabaseAdapterTest {
     @Test
     void canUpdateTask() {
         DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
-        Task task = databaseAdapter.getTask(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+        Task task = getTaskById(UUID.fromString("00000000-0000-0000-0000-000000000001"));
 
         task.setTitle("Updated Test Task");
         databaseAdapter.updateTask(task);
 
-        Task t = databaseAdapter.getTask(task.getId());
+        Task t = getTaskById(task.getId());
 
         assertEquals("Updated Test Task", t.getTitle());
+    }
+
+    @Test
+    void canCreateInTrayTask(){
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
+
+        Task task = TaskFactory.createTask("Test Task", "Test Description");
+
+        databaseAdapter.createInTrayTask(task);
+        ToDoList toDoList = databaseAdapter.readToDoList();
+
+        Task taskInInTray = toDoList.getInTrayTask(task.getId());
+
+        UUID taskId = task.getId();
+        assertThrows(NotFoundException.class, () -> toDoList.getTask(taskId));
+        assertEquals(task, taskInInTray);
+    }
+
+    @Test
+    void canDeleteInTrayTask(){
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter(connection);
+
+        Task task = TaskFactory.createTask("Test Task", "Test Description");
+
+        databaseAdapter.createInTrayTask(task);
+        databaseAdapter.deleteInTrayTask(task.getId());
+
+        ToDoList toDoList = databaseAdapter.readToDoList();
+
+        UUID taskId = task.getId();
+        assertThrows(NotFoundException.class, () -> toDoList.getInTrayTask(taskId));
     }
 }

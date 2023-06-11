@@ -4,8 +4,8 @@ import hwr.oop.todo.application.usecases.UseCases;
 import hwr.oop.todo.cli.IO;
 import hwr.oop.todo.cli.ui.menu.Menu;
 import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
+import hwr.oop.todo.cli.ui.menu.responses.Table;
 
-import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class MenuController {
@@ -35,7 +35,7 @@ public class MenuController {
         message.ifPresent(cli::displayMessage);
 
         // Print optional table
-        Optional<LinkedHashMap<String, String>> table = menuResponse.table();
+        Optional<Table> table = menuResponse.table();
         table.ifPresent(cli::displayTable);
 
         // Check if it should navigate

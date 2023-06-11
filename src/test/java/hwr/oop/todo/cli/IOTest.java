@@ -4,11 +4,12 @@ import hwr.oop.todo.cli.ui.menu.FailedWriteException;
 import hwr.oop.todo.cli.ui.menu.MenuAction;
 import hwr.oop.todo.cli.ui.menu.MenuActionHandlerFunction;
 import hwr.oop.todo.cli.ui.menu.responses.StringResponse;
+import hwr.oop.todo.cli.ui.menu.responses.Table;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -104,9 +105,10 @@ class IOTest {
         InputStream in = createInputStreamForInput("Test");
         IO cli = new IO(in, out);
 
-        LinkedHashMap<String, String> table = new LinkedHashMap<>();
-        table.put("Key1", "Value1");
-        table.put("Key2", "Value2");
+        Table table = new Table()
+                .withRow("Key1", "Value1")
+                .withRow("Key2", "Value2");
+
         cli.displayTable(table);
 
         String output = out.toString();
@@ -172,5 +174,29 @@ class IOTest {
 
         assertEquals('a', inputKey);
         assertEquals(output, "Press a key to continue"+System.lineSeparator());
+    }
+
+    @Test
+    void doesNotAcceptEmptyInputKey(){
+        InputStream in = createInputStreamForInput("\na");
+        OutputStream out = new ByteArrayOutputStream();
+
+        IO cli = new IO(in, out);
+        char inputKey = cli.promptNavigationKeyEntry();
+
+        String output = out.toString();
+
+        assertEquals('a', inputKey);
+        assertEquals(output, "Press a key to continue"+System.lineSeparator()+"Press a key to continue"+System.lineSeparator());
+    }
+
+    @Test
+    void canHandleEmptyInput(){
+        InputStream in = ByteArrayInputStream.nullInputStream();
+        OutputStream out = new ByteArrayOutputStream();
+
+        IO cli = new IO(in, out);
+
+        assertThrows(NoSuchElementException.class, cli::promptNavigationKeyEntry);
     }
 }

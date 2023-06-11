@@ -29,3 +29,10 @@ create table if not exists Tasks
     description text                                null,
     state       text                                null
 );
+create table if not exists InTrayTasks
+(
+    id          varchar(36)                         not null primary key,
+    title       text                                not null,
+    description text                                null,
+    state       text                                null
+);

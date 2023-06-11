@@ -36,4 +36,10 @@ class ErrorResponseTest {
         assertFalse(response.table().isPresent());
     }
 
+    @Test
+    void shouldNotQuit() {
+        ErrorResponse response = ErrorResponse.withMessage("abc");
+
+        assertFalse(response.shouldQuit());
+    }
 }

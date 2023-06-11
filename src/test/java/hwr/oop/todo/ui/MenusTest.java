@@ -1,14 +1,17 @@
 package hwr.oop.todo.ui;
 
+import hwr.oop.todo.application.usecases.GetInTrayTaskUseCase;
 import hwr.oop.todo.application.usecases.UseCases;
 import hwr.oop.todo.cli.ui.Menus;
 import hwr.oop.todo.cli.ui.ParameterProvider;
+import hwr.oop.todo.cli.ui.menu.responses.Table;
 import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.library.project.ProjectFactory;
 import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
 import hwr.oop.todo.library.task.TaskFactory;
+import hwr.oop.todo.library.task.TaskState;
 import hwr.oop.todo.library.todolist.NotFoundException;
 import hwr.oop.todo.library.todolist.ToDoList;
 import hwr.oop.todo.cli.ui.menu.Menu;
@@ -25,22 +28,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class MenusTest {
     Persistence mockPersistence = new Persistence() {
         @Override
-        public void insertProject(Project project) {
+        public void deleteInTrayTask(UUID id) {
 
         }
 
         @Override
-        public void insertTag(Tag tag) {
+        public void createInTrayTask(Task task) {
 
         }
 
         @Override
-        public void insertTask(Task task) {
+        public void createProject(Project project) {
 
         }
 
         @Override
-        public ToDoList loadToDoList() {
+        public void createTag(Tag tag) {
+
+        }
+
+        @Override
+        public void createTask(Task task) {
+
+        }
+
+        @Override
+        public ToDoList readToDoList() {
             return new ToDoList();
         }
 
@@ -130,17 +143,17 @@ class MenusTest {
         assertTrue(response.isSuccess());
         assertNotNull(task);
 
-        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
-                "Titel", "Test Task",
-                "ID", task.getId().toString(),
-                "Beschreibung", "",
-                "Tags", ""
-        ));
+        Table expectedTable = new Table()
+                .withRow("ID", task.getId().toString())
+                .withRow("Titel", "Test Task")
+                .withRow("Beschreibung", "")
+                .withRow("Status", "Nicht begonnen")
+                .withRow("Tags", "");
 
         assertTrue(response.table().isPresent());
-        LinkedHashMap<String, String> responseTable = response.table().get();
+        Table table = response.table().get();
 
-        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
+        assertEquals(expectedTable, table);
     }
 
     @Test
@@ -163,19 +176,16 @@ class MenusTest {
 
         MenuResponse response = Menus.INTRAY.handle('b', useCases, parameterProvider);
 
-        assertTrue(response.isSuccess());
-
-        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
-                "Titel", "Test InTrayTask",
-                "ID", task.getId().toString(),
-                "Beschreibung", "",
-                "Tags", ""
-        ));
+        Table expectedTable = new Table()
+                .withRow("ID", task.getId().toString())
+                .withRow("Titel", "Test InTrayTask")
+                .withRow("Beschreibung", "")
+                .withRow("Tags", "");
 
         assertTrue(response.table().isPresent());
-        LinkedHashMap<String, String> responseTable = response.table().get();
+        Table table = response.table().get();
 
-        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
+        assertEquals(expectedTable, table);
     }
     @Test
     void CanDeleteInTrayTask(){
@@ -190,9 +200,9 @@ class MenusTest {
 
         assertTrue(response.isSuccess());
 
-        assertThrows(NotFoundException.class, () -> useCases.getInTrayTaskUseCase().getInTrayTaskById(task.getId()));
-
-
+        UUID taskId = task.getId();
+        GetInTrayTaskUseCase useCase = useCases.getInTrayTaskUseCase();
+        assertThrows(NotFoundException.class, () -> useCase.getInTrayTaskById(taskId));
     }
 
     @Test
@@ -208,10 +218,10 @@ class MenusTest {
 
         assertTrue(response.isSuccess());
 
-        assertThrows(NotFoundException.class, () -> useCases.getInTrayTaskUseCase().getInTrayTaskById(task.getId()));
+        UUID taskId = task.getId();
+        GetInTrayTaskUseCase useCase = useCases.getInTrayTaskUseCase();
+        assertThrows(NotFoundException.class, () -> useCase.getInTrayTaskById(taskId));
         assertEquals(task, useCases.getTaskUseCase().getTaskById(task.getId()));
-
-
     }
 
     @Test
@@ -235,18 +245,15 @@ class MenusTest {
 
         MenuResponse response = Menus.TAG.handle('b', useCases, parameterProvider);
 
-        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
-                "Name", "Tag Name",
-                "ID", tag.getId().toString(),
-                "Beschreibung", ""
-        ));
+        Table expectedTable = new Table()
+                .withRow("ID", tag.getId().toString())
+                .withRow("Name", "Tag Name")
+                .withRow("Beschreibung", "");
 
         assertTrue(response.table().isPresent());
-        LinkedHashMap<String, String> responseTable = response.table().get();
+        Table table = response.table().get();
 
-        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
-
-        assertTrue(response.isSuccess());
+        assertEquals(expectedTable, table);
     }
 
     @Test
@@ -270,18 +277,15 @@ class MenusTest {
 
         MenuResponse response = Menus.PROJECT.handle('b', useCases, parameterProvider);
 
-        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
-                "Name", "Test Project",
-                "ID", project.getId().toString(),
-                "Zugeordnete Aufgaben", "0"
-        ));
+        Table expectedTable = new Table()
+                .withRow("ID", project.getId().toString())
+                .withRow("Name", "Test Project")
+                .withRow("Zugeordnete Aufgaben", "0");
 
         assertTrue(response.table().isPresent());
-        LinkedHashMap<String, String> responseTable = response.table().get();
+        Table table = response.table().get();
 
-        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
-
-        assertTrue(response.isSuccess());
+        assertEquals(expectedTable, table);
     }
 
     @Test
@@ -336,19 +340,55 @@ class MenusTest {
 
         MenuResponse response = Menus.PROJECT.handle('d', useCases, parameterProvider);
 
-        HashMap<String, String> expectedTable = new HashMap<>(Map.of(
-                "ID", task.getId().toString(),
-                "Titel", "Test Task",
-                "Beschreibung", "",
-                "Tags", "",
-                "---", "---"
-        ));
+        Table expectedTable = new Table()
+                .withRow("ID", task.getId().toString())
+                .withRow("Titel", "Test Task")
+                .withRow("Beschreibung", "")
+                .withRow("Tags", "")
+                .withDividerRow();
+
+        Table responseTable = response.table().get();
 
         assertTrue(response.table().isPresent());
-        LinkedHashMap<String, String> responseTable = response.table().get();
+        assertEquals(expectedTable, responseTable);
+    }
 
-        expectedTable.keySet().forEach(key -> assertEquals(expectedTable.get(key), responseTable.get(key)));
+    @Test
+    void canGetOpenTasks(){
+        UseCases useCases = UseCases.initialize(mockPersistence);
 
-        assertTrue(response.isSuccess());
+        Task openTask = new Task(UUID.randomUUID(), "Open Task", "", TaskState.OPEN);
+        Task inProgressTask = new Task(UUID.randomUUID(), "In Progress Task", "", TaskState.IN_PROGRESS);
+        Task doneTask = new Task(UUID.randomUUID(), "Done Task", "", TaskState.DONE);
+
+        useCases.getCreateTaskUseCase().insertTask(openTask);
+        useCases.getCreateTaskUseCase().insertTask(inProgressTask);
+        useCases.getCreateTaskUseCase().insertTask(doneTask);
+
+        ParameterProvider parameterProvider = new SequentialInputsParameterProvider();
+
+        MenuResponse response = Menus.TASK.handle('d', useCases, parameterProvider);
+
+        Table expectedTable = new Table()
+                .withRow("ID", openTask.getId().toString())
+                .withRow("Titel", "Open Task")
+                .withRow("Beschreibung", "")
+                .withRow("Tags", "")
+                .withRow("Status", "Nicht begonnen")
+                .withDividerRow()
+                .withRow("ID", inProgressTask.getId().toString())
+                .withRow("Titel", "In Progress Task")
+                .withRow("Beschreibung", "")
+                .withRow("Tags", "")
+                .withRow("Status", "In Bearbeitung")
+                .withDividerRow();
+
+        assertTrue(response.table().isPresent());
+        List<Table.Row> rows = response.table().get().getRows();
+        List<Table.Row> expectedRows = expectedTable.getRows();
+
+        // The table returned by the menu is not sorted, so the order of elements can vary
+        // To compare the tables, we can't use `equals`
+        assertTrue(rows.containsAll(expectedRows));
     }
 }

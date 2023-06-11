@@ -4,7 +4,6 @@ import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.library.tag.Tag;
 import hwr.oop.todo.library.tag.TagFactory;
 import hwr.oop.todo.library.task.Task;
-import hwr.oop.todo.library.task.TaskFactory;
 import hwr.oop.todo.library.task.TaskState;
 import hwr.oop.todo.library.todolist.ToDoList;
 
@@ -31,25 +30,7 @@ public class DatabaseAdapter implements Persistence {
         this.connection = connection;
     }
 
-    public Task getTask(UUID id) {
-        try {
-            Statement statement = connection.createStatement();
-            String sql = String.format("SELECT * FROM Tasks WHERE id = '%s'", id);
-            ResultSet resultSet = statement.executeQuery(sql);
-            Task task = null;
-            if (resultSet.next()) {
-                String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
-                TaskState state = TaskState.valueOf(resultSet.getString("state"));
-                task = TaskFactory.createTask(state, id, title, description);
-            }
-            resultSet.close();
-            statement.close();
-            return task;
-        } catch (SQLException e) {
-            throw new FailedDatabaseStatementException(e);
-        }
-    }
+
     public void updateTask(Task task) {
         try {
             Statement statement = connection.createStatement();
@@ -61,7 +42,7 @@ public class DatabaseAdapter implements Persistence {
         }
     }
 
-    public void insertTask(Task task) {
+    public void createTask(Task task) {
         try {
             Statement statement = connection.createStatement();
             String sql = String.format("INSERT INTO Tasks (id, title, description, state) VALUES ('%s', '%s', '%s', '%s')", task.getId(), task.getTitle(), task.getDescription(), task.getState());
@@ -112,7 +93,7 @@ public class DatabaseAdapter implements Persistence {
         }
     }
 
-    public void insertProject(Project project) {
+    public void createProject(Project project) {
         try {
             Statement statement = connection.createStatement();
             String sql = String.format("INSERT INTO Projects (id, name) VALUES ('%s', '%s')", project.getId(), project.getName());
@@ -166,7 +147,7 @@ public class DatabaseAdapter implements Persistence {
         }
     }
 
-    public void insertTag (Tag tag){
+    public void createTag(Tag tag){
         try {
             Statement statement = connection.createStatement();
             String sql = String.format("INSERT INTO Tags (id, name, description) VALUES ('%s', '%s', '%s')", tag.getId(), tag.getName(), tag.getDescription());
@@ -260,6 +241,31 @@ public class DatabaseAdapter implements Persistence {
         }
     }
 
+    private List<Task> loadInTrayTasksFromDatabase(){
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "SELECT * FROM InTrayTasks";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+            List<Task> tasks = new ArrayList<>();
+
+            while (resultSet.next()) {
+                UUID id = UUID.fromString(resultSet.getString("id"));
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                TaskState state = TaskState.valueOf(resultSet.getString("state"));
+                tasks.add(new Task(id, title, description, state));
+            }
+
+            resultSet.close();
+            statement.close();
+
+            return tasks;
+        } catch (SQLException e) {
+            throw new FailedDatabaseStatementException(e);
+        }
+    }
+
     private HashMap<UUID, UUID> getTasksOfAllProject(){
         try {
             Statement statement = connection.createStatement();
@@ -307,17 +313,19 @@ public class DatabaseAdapter implements Persistence {
     }
 
     @Override
-    public ToDoList loadToDoList() {
+    public ToDoList readToDoList() {
         ToDoList toDoList = new ToDoList();
 
         List<Tag> tags = loadTagsFromDatabase();
         List<Project> projects = loadProjectsFromDatabase();
         List<Task> tasks = loadTasksFromDatabase();
+        List<Task> inTrayTasks = loadInTrayTasksFromDatabase();
 
         // Create the entities in the toDoList
         tags.forEach(toDoList::createTag);
         projects.forEach(toDoList::createProject);
         tasks.forEach(toDoList::createTask);
+        inTrayTasks.forEach(toDoList::createInTrayTask);
 
         // Add the tasks to the projects
         HashMap<UUID, UUID> tasksOfProjects = getTasksOfAllProject();
@@ -336,5 +344,29 @@ public class DatabaseAdapter implements Persistence {
         });
 
         return toDoList;
+    }
+
+    @Override
+    public void createInTrayTask(Task task) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = String.format("INSERT INTO InTrayTasks (id, title, description, state) VALUES ('%s', '%s', '%s', '%s')", task.getId(), task.getTitle(), task.getDescription(), task.getState());
+            statement.execute(sql);
+            statement.close();
+        } catch (SQLException e) {
+            throw new FailedDatabaseStatementException(e);
+        }
+    }
+
+    @Override
+    public void deleteInTrayTask(UUID id) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = String.format("DELETE FROM InTrayTasks WHERE id = '%s'", id);
+            statement.execute(sql);
+            statement.close();
+        } catch (SQLException e) {
+            throw new FailedDatabaseStatementException(e);
+        }
     }
 }

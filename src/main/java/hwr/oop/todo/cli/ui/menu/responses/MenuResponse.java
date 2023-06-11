@@ -2,7 +2,6 @@ package hwr.oop.todo.cli.ui.menu.responses;
 
 import hwr.oop.todo.cli.ui.menu.Menu;
 
-import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public interface MenuResponse {
@@ -13,5 +12,5 @@ public interface MenuResponse {
 
     Optional<Menu> navigationTarget();
 
-    Optional<LinkedHashMap<String, String>> table();
+    Optional<Table> table();
 }

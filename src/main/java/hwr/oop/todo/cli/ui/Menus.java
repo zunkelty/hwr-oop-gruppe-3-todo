@@ -4,6 +4,7 @@ import hwr.oop.todo.application.usecases.UseCases;
 import hwr.oop.todo.cli.ui.menu.Menu;
 import hwr.oop.todo.cli.ui.menu.responses.MenuResponse;
 import hwr.oop.todo.cli.ui.menu.responses.StringResponse;
+import hwr.oop.todo.cli.ui.menu.responses.Table;
 import hwr.oop.todo.cli.ui.menu.responses.TableResponse;
 import hwr.oop.todo.library.project.Project;
 import hwr.oop.todo.library.project.ProjectFactory;
@@ -70,9 +71,9 @@ public class Menus {
     }
 
     private static TaskState stringToTaskState(String taskState){
-        if(taskState == "Nicht begonnen") return TaskState.OPEN;
-        if(taskState == "In Bearbeitung") return TaskState.IN_PROGRESS;
-        if(taskState == "Erledigt") return TaskState.DONE;
+        if(taskState.equals("Nicht begonnen")) return TaskState.OPEN;
+        if(taskState.equals("In Bearbeitung")) return TaskState.IN_PROGRESS;
+        if(taskState.equals("Erledigt")) return TaskState.DONE;
         return TaskState.OPEN;
     }
 
@@ -107,28 +108,35 @@ public class Menus {
 
         Task task = useCases.getTaskUseCase().getTaskById(id);
 
-        return new TableResponse()
+        Table table = new Table()
                 .withRow("ID", task.getId().toString())
                 .withRow(TITLE, task.getTitle())
                 .withRow(DESC, task.getDescription())
                 .withRow("Status", taskStateToString(task.getState()))
                 .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
+
+        return TableResponse.withTable(table);
     }
 
     private static TableResponse showOpenTasks(UseCases useCases, ParameterProvider parameterProvider){
         List<Task> openTasks = useCases.getOpenTasksUseCase().getOpenTasks();
 
-        TableResponse response = new TableResponse();
+        Table table = new Table();
 
-        for (Task task : openTasks) {
-            response.withRow("ID", task.getId().toString())
+        for(int i = 1; i <= openTasks.size(); i++){
+            Task task = openTasks.get(i-1);
+
+            String tags = task.getTags().stream().map(Tag::getName).collect(Collectors.joining(","));
+
+            table.withRow("ID", task.getId().toString())
                     .withRow(TITLE, task.getTitle())
                     .withRow(DESC, task.getDescription())
-                    .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")))
-                    .withRow("---", "---");
+                    .withRow("Tags", tags)
+                    .withRow("Status", taskStateToString(task.getState()))
+                    .withDividerRow();
         }
 
-        return response;
+        return TableResponse.withTable(table);
     }
 
     private static StringResponse createInTrayTask(UseCases useCases, ParameterProvider parameters) {
@@ -147,11 +155,13 @@ public class Menus {
 
         Task task = useCases.getInTrayTaskUseCase().getInTrayTaskById(id);
 
-        return new TableResponse()
+        Table table = new Table()
                 .withRow("ID", task.getId().toString())
                 .withRow(TITLE, task.getTitle())
                 .withRow(DESC, task.getDescription())
                 .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")));
+
+        return new TableResponse(table);
     }
 
     private static StringResponse deleteInTrayTask(UseCases useCases, ParameterProvider parameters) {
@@ -194,10 +204,12 @@ public class Menus {
 
         Project project = useCases.getProjectUseCase().getProjectById(id);
 
-        return new TableResponse()
+        Table table = new Table()
                 .withRow("ID", project.getId().toString())
                 .withRow("Name", project.getName())
                 .withRow("Zugeordnete Aufgaben", String.valueOf(project.getTasks().size()));
+
+        return TableResponse.withTable(table);
     }
 
     private static StringResponse addTaskToProject(UseCases useCases, ParameterProvider parameterProvider){
@@ -219,17 +231,17 @@ public class Menus {
 
         List<Task> tasks = useCases.getTasksFromProjectUseCase().getTasksOfProject(projectId);
 
-        TableResponse response = new TableResponse();
+        Table table = new Table();
 
         for (Task task : tasks) {
-            response.withRow("ID", task.getId().toString())
+            table.withRow("ID", task.getId().toString())
                     .withRow(TITLE, task.getTitle())
                     .withRow(DESC, task.getDescription())
                     .withRow("Tags", task.getTags().stream().map(Tag::getName).collect(Collectors.joining(",")))
-                    .withRow("---", "---");
+                    .withDividerRow();
         }
 
-        return response;
+        return TableResponse.withTable(table);
     }
 
     private static StringResponse createTag(UseCases useCases, ParameterProvider parameters){
@@ -248,10 +260,12 @@ public class Menus {
 
         Tag tag = useCases.getTagUseCase().getTagById(id);
 
-        return new TableResponse()
+        Table table = new Table()
                 .withRow("ID", tag.getId().toString())
                 .withRow("Name", tag.getName())
                 .withRow(DESC, tag.getDescription());
+
+        return TableResponse.withTable(table);
     }
 
     private static StringResponse addTagToTask(UseCases useCases, ParameterProvider parameterProvider){

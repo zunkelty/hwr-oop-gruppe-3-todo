@@ -37,4 +37,11 @@ class InvalidKeyResponseTest {
         assertFalse(response.table().isPresent());
     }
 
+    @Test
+    void shouldNotQuit() {
+        InvalidKeyResponse response = InvalidKeyResponse.withKey('a');
+
+        assertFalse(response.shouldQuit());
+    }
+
 }

@@ -35,4 +35,11 @@ class NavigationResponseTest {
         assertFalse(response.table().isPresent());
     }
 
+    @Test
+    void shouldNotQuit() {
+        NavigationResponse response = NavigationResponse.to(Menus.HOME);
+
+        assertFalse(response.shouldQuit());
+    }
+
 }

@@ -2,7 +2,6 @@ package hwr.oop.todo.cli.ui.menu.responses;
 
 import hwr.oop.todo.cli.ui.menu.Menu;
 
-import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class QuitResponse implements MenuResponse{
@@ -29,7 +28,7 @@ public class QuitResponse implements MenuResponse{
     }
 
     @Override
-    public Optional<LinkedHashMap<String, String>> table() {
+    public Optional<Table> table() {
         return Optional.empty();
     }
 

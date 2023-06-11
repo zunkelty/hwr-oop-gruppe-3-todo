@@ -13,13 +13,6 @@ public class TaskFactory {
         return new Task(id, title);
     }
 
-    // create task with state, id, title, description
-    public static Task createTask(TaskState state, UUID id, String title, String description){
-        Task task = new Task(id, title, description);
-        task.setState(state);
-        return task;
-    }
-
     private TaskFactory() {
     }
 }
